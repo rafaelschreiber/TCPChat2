@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 import threading
 import socket
-import time
+from time import gmtime, strftime, sleep
+import os
+import sys
 
 connectionDictionary = {} # dicrionary where to put all connection threads in
+currentTime = '' # variable for displaying the current time in logs
+halt = False # indicator variable for program shutdown
 
 # building socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,7 +22,7 @@ class connectedHost(threading.Thread):
         self.id = iD
         self.nickname = str(self.connection.recv(2048), "utf8")
         self.isonline = True
-        broadcast(self.nickname + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
+        self.broadcast(self.nickname + " is online")
         print(self.nickname + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
         threading.Thread.__init__(self)
 
@@ -27,26 +31,38 @@ class connectedHost(threading.Thread):
         while True:
             message = self.connection.recv(2048)
             if (not message) or (message == bytes("%exit", "utf8")):
-                self.connection.close()
-                self.isonline = False
-                print(self.nickname + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " left")
-                broadcast(self.nickname + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " left")
-                return
+                self.closeConnection()
+                return # is required for killing thread
             message = str(message, "utf8")
-            broadcast(self.nickname + ": " + message)
+            self.broadcast(self.nickname + ": " + message)
 
 
     def sendMessage(self, message):
         self.connection.send(bytes(message, "utf8"))
 
 
+    def broadcast(self, message):
+        for connection in connectionDictionary:
+            if connectionDictionary[connection].isonline is True:
+                if connectionDictionary[connection].id != self.id:
+                    connectionDictionary[connection].sendMessage(message)
 
 
-def broadcast(message):
-    print("Broadcasted")
-    for connection in connectionDictionary:
-        if connectionDictionary[connection].isonline is True:
-            connectionDictionary[connection].sendMessage(message)
+    def closeConnection(self):
+        self.connection.send(bytes("You will be disconnected now", "utf8"))
+        self.connection.close()
+        self.isonline = False
+        self.broadcast(self.nickname + " left")
+        print(self.nickname + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
+
+
+
+def updateTime():
+    global currentTime
+    while not halt:
+        currentTime = "[" + strftime("%Y-%m-%d %H:%M:%S", gmtime()) + "] "
+        sleep(1)
+    return
 
 
 def cliInterpretor(string):
@@ -100,36 +116,63 @@ def ls(args):
         print("ls: Expect max. 2 arguments")
 
 
-
 def shutdown():
-    print("Closing all connections...")
-    exit(0)
+    global halt
+    print("Closing connection listener...")
+    halt = True # kill all threads
+    print("Closing all connection threads...")
+    for connection in connectionDictionary:
+        connectionDictionary[connection].closeConnection()
+    print("Close socket")
+    server_socket.close()
+    print("Exiting...")
+    sys.exit(0)
 
 
 def acceptConnections():
     print("Started connection listener")
     global connectionDictionary
     connectionCounter = 0
-    while True:
+    while not halt:
         connection, address = server_socket.accept()
         connectionDictionary["conn" + str(connectionCounter)] = connectedHost(connection, address, connectionCounter)
         connectionDictionary["conn" + str(connectionCounter)].start()
         connectionCounter += 1
+    return
+
+
+def console():
+    print("Welcome to the TCPChat2 server console")
+    print("I'm ready for your commands!")
+    while True:
+        command = str(input(currentTime[:-1] + "$ "))
+        command = cliInterpretor(command)
+        if len(command) == 0:
+            continue
+        elif command[0] == "ls":
+            ls(command[1:])
+        elif command[0] == "exit":
+            shutdown()
+        elif command[0] == "clear" or command[0] == "cls":
+            os.system("clear")
+        else:
+            print("Command \'" + command[0] + "\' not found")
+        print("")
 
 
 # creating thread for accepting connections
 acceptConnectionsThread = threading.Thread(target=acceptConnections)
 acceptConnectionsThread.start()
 
-print("Welcome to the TCPChat2 server console")
-print("I'm ready for your commands!")
-while True:
-    command = str(input("$ "))
-    command = cliInterpretor(command)
-    if command[0] == "ls":
-        ls(command[1:])
-    elif command[0] == "exit":
-        shutdown()
-    else:
-        print("Command \'" + command[0] + "\' not found")
-    print("")
+# creating thread for time logging
+timeUpdater = threading.Thread(target=updateTime)
+timeUpdater.start()
+
+
+def main():
+    console()
+
+
+if __name__ == "__main__":
+    main()
+
