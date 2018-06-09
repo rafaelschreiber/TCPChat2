@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import threading
 import socket
+import time
+
+connectionDictionary = {} # dicrionary where to put all connection threads in
 
 class connectedHost(threading.Thread):
     """Class for the connection Treads"""
@@ -9,6 +12,7 @@ class connectedHost(threading.Thread):
         self.ip, self.port = address
         self.id = id
         self.nickname = str(self.connection.recv(2048), "utf8")
+        self.isonline = True
         print(self.nickname + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
         threading.Thread.__init__(self)
 
@@ -19,19 +23,82 @@ class connectedHost(threading.Thread):
             msg = str(msg, "utf8")
             if msg == "%exit":
                 print(self.nickname + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " left")
-                return True #
+                self.isonline = False
+                return True
             print(self.nickname + ": " + msg)
 
 
+def cliInterpretor(string):
+    keywords = []
+    currentWord = ''
+    isInWord = False
+    isInString = False
+    for char in string:
+        if isInString:
+            if char == "\"" or char == "\'":
+                keywords.append(currentWord)
+                currentWord = ''
+                isInString = False
+            else:
+                currentWord += char
+        elif isInWord:
+            if char == ' ':
+                keywords.append(currentWord)
+                currentWord = ''
+                isInWord = False
+            else:
+                currentWord += char
+        else:
+            if char == "\"" or char == "\'":
+                isInString = True
+            elif char != ' ':
+                isInWord = True
+                currentWord += char
+    if currentWord != '':
+        keywords.append(currentWord)
+    return keywords
 
+
+def ls(args):
+    print(args)
+
+
+def shutdown():
+    print("Closing all connections...")
+    exit(0)
+
+
+print("Welcome to the TCPChat2 server console")
+print("I'm ready for your commands!")
+while True:
+    command = str(input("$ "))
+    command = cliInterpretor(command)
+    if command[0] == "ls":
+        ls(command[1:])
+    elif command[0] == "exit":
+        shutdown()
+    else:
+        print("Command \'" + command[0] + "\' not found")
+    print("")
+
+
+
+
+
+"""
+while True:
+    command = str(input("$"))
+    break
+           
+    
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind(("127.0.0.1", 8080))
+server_socket.bind(("127.0.0.1", 2018))
 server_socket.listen(10)
-connectionDictionary = {}
 connectionCounter = 0
 while True:
     (client_socket, addr) = server_socket.accept()
     connectionDictionary["conn" + str(connectionCounter)] = connectedHost(client_socket, addr, connectionCounter)
     connectionDictionary["conn" + str(connectionCounter)].start()
     connectionCounter += 1
-    #print(connectionDictionary)
+    print(connectionDictionary)
+"""

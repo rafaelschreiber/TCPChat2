@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import socket
 
-server_address = ("127.0.0.1", 8080)
+server_address = ("127.0.0.1", 2018)
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create socket
 client_socket.connect(server_address) # specify address
