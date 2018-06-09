@@ -60,7 +60,24 @@ def cliInterpretor(string):
 
 
 def ls(args):
-    print(args)
+    if len(args) == 0:
+        if len(connectionDictionary) == 0:
+            print("ls: There are no connections")
+        for key in connectionDictionary:
+            print(key + ": " + connectionDictionary[key])
+    elif len(args) == 1:
+        if args[0] in connectionDictionary:
+            print("Properties of \'" + args[0] + "\':")
+            print("ID: " + connectionDictionary[args[0]].id)
+            print("IP: " + connectionDictionary[args[0]].ip)
+            print("Port: " + connectionDictionary[args[0]].port)
+            print("Nickname: " + connectionDictionary[args[0]].nickname)
+            print("isOnline: " + connectionDictionary[args[0]].isOnline)
+        else:
+            print("ls: Connection \'" + args[0] + "\' not found")
+    else:
+        print("ls: Expect max. 2 arguments")
+
 
 
 def shutdown():
