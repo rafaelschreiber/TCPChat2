@@ -28,13 +28,17 @@ class connectedHost(threading.Thread):
 
 
     def run(self):
-        while True:
-            message = self.connection.recv(2048)
+        while not halt:
+            try:
+                message = self.connection.recv(2048)
+            except OSError:
+                return
             if (not message) or (message == bytes("%exit", "utf8")):
                 self.closeConnection()
-                return # is required for killing thread
+                return
             message = str(message, "utf8")
             self.broadcast(self.nickname + ": " + message)
+        return
 
 
     def sendMessage(self, message):
@@ -48,8 +52,9 @@ class connectedHost(threading.Thread):
                     connectionDictionary[connection].sendMessage(message)
 
 
-    def closeConnection(self):
-        self.connection.send(bytes("You will be disconnected now", "utf8"))
+    def closeConnection(self, exitmessage):
+        self.connection.send(bytes(exitmessage, "utf8"))
+        self.connection.send(bytes("%exit", "utf8"))
         self.connection.close()
         self.isonline = False
         self.broadcast(self.nickname + " left")
@@ -122,10 +127,11 @@ def shutdown():
     halt = True # kill all threads
     print("Closing all connection threads...")
     for connection in connectionDictionary:
-        connectionDictionary[connection].closeConnection()
-    print("Close socket")
+        if connectionDictionary[connection].isonline is True:
+            connectionDictionary[connection].closeConnection("The server is shutting down you will be disconnected now")
+    print("Closing socket...")
     server_socket.close()
-    print("Exiting...")
+    print("Exiting")
     sys.exit(0)
 
 
@@ -134,7 +140,10 @@ def acceptConnections():
     global connectionDictionary
     connectionCounter = 0
     while not halt:
-        connection, address = server_socket.accept()
+        try:
+            connection, address = server_socket.accept()
+        except ConnectionAbortedError:
+            return
         connectionDictionary["conn" + str(connectionCounter)] = connectedHost(connection, address, connectionCounter)
         connectionDictionary["conn" + str(connectionCounter)].start()
         connectionCounter += 1
@@ -175,4 +184,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

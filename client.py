@@ -10,8 +10,14 @@ halt = False # indicator variable for program shutdown
 def recvMessages():
     print("Started Message Reciever")
     while not halt:
-        message = client_socket.recv(2048)
+        try:
+            message = client_socket.recv(2048)
+        except OSError:
+            return
         message = str(message, "utf8")
+        if message == "%exit":
+            shutdown()
+            return
         print(message)
     return
 
@@ -57,7 +63,7 @@ acceptConnectionsThread = threading.Thread(target=recvMessages)
 acceptConnectionsThread.start()
 client_socket.send(bytes(connectionInfo[2], "utf8"))
 print("Welcome " + connectionInfo[2])
-while True:
+while not halt:
     try:
         msg = str(input(">>> "))
         if msg == "%exit":
@@ -69,4 +75,8 @@ while True:
     except KeyboardInterrupt:
         client_socket.send(bytes("%exit", "utf8"))
         print("Connection closed")
+        shutdown()
         exit(0)
+    except OSError:
+        pass
+
