@@ -34,7 +34,7 @@ class connectedHost(threading.Thread):
             except OSError:
                 return
             if (not message) or (message == bytes("%exit", "utf8")):
-                self.closeConnection()
+                self.closeConnection("")
                 return
             message = str(message, "utf8")
             self.broadcast(self.nickname + ": " + message)
