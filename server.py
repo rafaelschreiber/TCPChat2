@@ -59,6 +59,7 @@ class connectedHost(threading.Thread):
         self.isonline = False
         self.broadcast(self.nickname + " left")
         print(self.nickname + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
+        return
 
 
 
@@ -121,6 +122,21 @@ def ls(args):
         print("ls: Expect max. 2 arguments")
 
 
+def kick(args):
+    if len(args) == 0:
+        print("kick: Which connection do you want to kick?")
+    elif len(args) == 1:
+        try:
+            connectionDictionary[args[0]].closeConnection("You were kicked by the server")
+        except KeyError:
+            print("kick: the connection \'" + args[0] + "\' doesn't exist")
+    elif len(args) == 2:
+        try:
+            connectionDictionary[args[0]].closeConnection(args[1])
+        except KeyError:
+            print("kick: the connection \'" + args[0] + "\' doesn't exist")
+
+
 def shutdown():
     global halt
     print("Closing connection listener...")
@@ -162,6 +178,8 @@ def console():
             ls(command[1:])
         elif command[0] == "exit":
             shutdown()
+        elif command[0] == "kick":
+            kick(command[1:])
         elif command[0] == "clear" or command[0] == "cls":
             os.system("clear")
         else:

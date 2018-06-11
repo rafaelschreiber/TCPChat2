@@ -18,7 +18,8 @@ def recvMessages():
         if message == "%exit":
             shutdown()
             return
-        print(message)
+        else:
+            print(message)
     return
 
 
@@ -40,7 +41,6 @@ def getConnectionInfo():
     username = str(input(">>> "))
     return [address, port, username]
 
-
 def shutdown():
     global halt
     halt = True
@@ -48,7 +48,7 @@ def shutdown():
     sys.exit(0)
 
 
-# building socket
+
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 connectionInfo = getConnectionInfo()
 try:
@@ -59,7 +59,7 @@ except ConnectionRefusedError:
     sys.exit(0)
 
 
-acceptConnectionsThread = threading.Thread(target=recvMessages)
+acceptConnectionsThread = threading.Thread(target=recvMessages)             #Funtkionen machen wäre sinnvoll fresse sebi
 acceptConnectionsThread.start()
 client_socket.send(bytes(connectionInfo[2], "utf8"))
 print("Welcome " + connectionInfo[2])
