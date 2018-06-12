@@ -3,7 +3,6 @@ import threading
 import socket
 from time import gmtime, strftime, sleep
 import os
-import sys
 
 connectionDictionary = {} # dicrionary where to put all connection threads in
 currentTime = '' # variable for displaying the current time in logs
@@ -20,10 +19,20 @@ class connectedHost(threading.Thread):
         self.connection = connection
         self.ip, self.port = address
         self.id = iD
-        self.nickname = str(self.connection.recv(2048), "utf8")
+        while not halt:
+            username = str(self.connection.recv(2048), "utf8")
+            username = cliInterpretor(username)
+            if username[0] == "%exit":
+                shutdown()
+                break
+            elif username[0] == "%setusername":
+                if len(username) < 2:
+                    continue
+                self.username = username[1]
+                break
         self.isonline = True
-        self.broadcast(self.nickname + " is online")
-        print(self.nickname + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
+        self.broadcast(self.username + " is online")
+        print(self.username + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
         threading.Thread.__init__(self)
 
 
@@ -37,12 +46,17 @@ class connectedHost(threading.Thread):
                 self.closeConnection("")
                 return
             message = str(message, "utf8")
-            self.broadcast(self.nickname + ": " + message)
+            self.broadcast(self.username + ": " + message)
         return
 
 
     def sendMessage(self, message):
         self.connection.send(bytes(message, "utf8"))
+
+
+    def changeUsername(self, newUsername):
+        self.broadcast(self.username + " changed his name to " + newUsername)
+        self.username = newUsername
 
 
     def broadcast(self, message):
@@ -57,8 +71,8 @@ class connectedHost(threading.Thread):
         self.connection.send(bytes("%exit", "utf8"))
         self.connection.close()
         self.isonline = False
-        self.broadcast(self.nickname + " left")
-        print(self.nickname + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
+        self.broadcast(self.username + " left")
+        print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
         return
 
 
@@ -114,12 +128,33 @@ def ls(args):
             print("ID: " + str(connectionDictionary[args[0]].id))
             print("IP: " + connectionDictionary[args[0]].ip)
             print("Port: " + str(connectionDictionary[args[0]].port))
-            print("Nickname: " + connectionDictionary[args[0]].nickname)
+            print("Username: " + connectionDictionary[args[0]].username)
             print("isonline: " + str(connectionDictionary[args[0]].isonline))
         else:
             print("ls: Connection \'" + args[0] + "\' not found")
     else:
         print("ls: Expect max. 2 arguments")
+
+
+def setusername(args):
+    if len(args) == 0:
+        print("setusername: Of which connection do you want to change the username")
+    elif len(args) == 1:
+        if args[0] in connectionDictionary:
+            if connectionDictionary[args[0]].isonline is True:
+                print("setusername: To which username do you want to change \'" + args[0] + "\'")
+            else:
+                print("setusername: \'" + args[0] + "\' isn't online anymore")
+        else:
+            print("setusername: Connection \'" + args[0] + "\' doesn't exist")
+    elif len(args) == 2:
+        if args[0] in connectionDictionary:
+            if connectionDictionary[args[0]].isonline is True:
+                connectionDictionary[args[0]].changeUsername(args[1])
+            else:
+                print("setusername: \'" + args[0] + "\' isn't online anymore")
+        else:
+            print("setusername: Connection \'" + args[0] + "\' doesn't exist")
 
 
 def kick(args):
@@ -135,6 +170,16 @@ def kick(args):
             connectionDictionary[args[0]].closeConnection(args[1])
         except KeyError:
             print("kick: the connection \'" + args[0] + "\' doesn't exist")
+    else:
+        print("kick: Expect max. 2 arguments")
+
+
+def time(args):
+    if len(args) == 0:
+        print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+    else:
+        print("kick: Expect max. 0 arguments")
+
 
 
 def shutdown():
@@ -148,7 +193,9 @@ def shutdown():
     print("Closing socket...")
     server_socket.close()
     print("Exiting")
-    sys.exit(0)
+    print("If the program don't exits automatically you cann press CTRL+C.")
+    print("You can ignore the following error")
+    exit(0)
 
 
 def acceptConnections():
@@ -170,7 +217,7 @@ def console():
     print("Welcome to the TCPChat2 server console")
     print("I'm ready for your commands!")
     while True:
-        command = str(input(currentTime[:-1] + "$ "))
+        command = str(input("$ "))
         command = cliInterpretor(command)
         if len(command) == 0:
             continue
@@ -182,6 +229,10 @@ def console():
             kick(command[1:])
         elif command[0] == "clear" or command[0] == "cls":
             os.system("clear")
+        elif command[0] == "time":
+            time(command[1:])
+        elif command[0] == "setusername":
+            setusername(command[1:])
         else:
             print("Command \'" + command[0] + "\' not found")
         print("")
