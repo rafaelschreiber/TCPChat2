@@ -68,7 +68,7 @@ class connectedHost(threading.Thread):
 
 
     def closeConnection(self, exitmessage=False):
-        if not exitmessage:
+        if exitmessage:
             try:
                 self.connection.send(bytes(exitmessage, "utf8"))
                 self.connection.send(bytes("%exit", "utf8"))
