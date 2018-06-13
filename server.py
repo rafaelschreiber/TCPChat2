@@ -19,7 +19,6 @@ class connectedHost(threading.Thread):
         self.connection = connection
         self.ip, self.port = address
         self.id = iD
-        self.daemon = True
         while not halt:
             username = str(self.connection.recv(2048), "utf8")
             username = cliInterpretor(username)
@@ -34,6 +33,7 @@ class connectedHost(threading.Thread):
         self.broadcast(self.username + " is online")
         print(self.username + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
         threading.Thread.__init__(self)
+        self.daemon = True
 
 
     def run(self):

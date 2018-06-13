@@ -59,9 +59,10 @@ except ConnectionRefusedError:
     sys.exit(0)
 
 
-acceptConnectionsThread = threading.Thread(target=recvMessages)             #Funtkionen machen wäre sinnvoll fresse sebi
+acceptConnectionsThread = threading.Thread(target=recvMessages)
+acceptConnectionsThread.daemon = True
 acceptConnectionsThread.start()
-client_socket.send(bytes(connectionInfo[2], "utf8"))
+client_socket.send(bytes("%setusername " + connectionInfo[2], "utf8"))
 print("Welcome " + connectionInfo[2])
 while not halt:
     try:
