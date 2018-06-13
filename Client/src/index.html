@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Simon">
+    <title>TCP-Chat</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="connect.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div id="messageArea" class="row">
+        <div class="col-md-4">
+            <div class="well">
+                <h3>Online</h3>
+                <ul class="list-group"></ul>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <section style="overflow: auto">
+                <div class="chat" id="chat"></div>
+            </section>
+                <form>
+                    <div class="form-group">
+                        <input id="message" type="text" placeholder="Message"
+                               class="form-control" autocomplete="off">
+                        <input type="submit" class="btn btn-success"
+                               value="Send Message"><!-- image of Send Message(in progress) -->
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>
+
+</body>
+</html>
