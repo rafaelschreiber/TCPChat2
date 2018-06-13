@@ -2,6 +2,7 @@
 import socket
 import threading
 import sys
+import os
 
 
 halt = False # indicator variable for program shutdown
@@ -41,13 +42,13 @@ def getConnectionInfo():
     username = str(input(">>> "))
     return [address, port, username]
 
+
 def shutdown():
     global halt
     halt = True
     client_socket.close()
     print("Press enter to close the program")
     sys.exit(0)
-
 
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,7 +74,10 @@ while not halt:
             print("Connection closed")
             shutdown()
             exit(0)
-        client_socket.send(bytes(msg, "utf8"))
+        elif msg == "%clear":
+            os.system("clear")
+        else:
+            client_socket.send(bytes(msg, "utf8"))
     except KeyboardInterrupt:
         client_socket.send(bytes("%exit", "utf8"))
         print("Connection closed")
