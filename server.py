@@ -19,6 +19,7 @@ class connectedHost(threading.Thread):
         self.connection = connection
         self.ip, self.port = address
         self.id = iD
+        self.daemon = True
         while not halt:
             username = str(self.connection.recv(2048), "utf8")
             username = cliInterpretor(username)
@@ -192,8 +193,8 @@ def shutdown():
     print("Closing socket...")
     server_socket.close()
     print("Exiting")
-    print("If the program don't exits automatically you cann press CTRL+C.")
-    print("You can ignore the following error")
+    #print("If the program don't exits automatically you cann press CTRL+C.")
+    #print("You can ignore the following error")
     exit(0)
 
 
@@ -239,10 +240,12 @@ def console():
 
 # creating thread for accepting connections
 acceptConnectionsThread = threading.Thread(target=acceptConnections)
+acceptConnectionsThread.daemon = True
 acceptConnectionsThread.start()
 
 # creating thread for time logging
 timeUpdater = threading.Thread(target=updateTime)
+timeUpdater.daemon = True
 timeUpdater.start()
 
 
