@@ -44,7 +44,7 @@ class connectedHost(threading.Thread):
             except OSError:
                 return
             if (not message) or (message == bytes("%exit", "utf8")):
-                self.closeConnection("")
+                self.closeConnection()
                 return
             message = str(message, "utf8")
             self.broadcast(self.username + ": " + message)
@@ -67,12 +67,13 @@ class connectedHost(threading.Thread):
                     connectionDictionary[connection].sendMessage(message)
 
 
-    def closeConnection(self, exitmessage):
-        try:
-            self.connection.send(bytes(exitmessage, "utf8"))
-            self.connection.send(bytes("%exit", "utf8"))
-        except OSError:
-            return
+    def closeConnection(self, exitmessage=False):
+        if not exitmessage:
+            try:
+                self.connection.send(bytes(exitmessage, "utf8"))
+                self.connection.send(bytes("%exit", "utf8"))
+            except OSError:
+                return
         self.connection.close()
         self.isonline = False
         self.broadcast(self.username + " left")
