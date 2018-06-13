@@ -23,8 +23,7 @@ class connectedHost(threading.Thread):
             username = str(self.connection.recv(2048), "utf8")
             username = cliInterpretor(username)
             if username[0] == "%exit":
-                shutdown()
-                break
+                return
             elif username[0] == "%setusername":
                 if len(username) < 2:
                     continue
