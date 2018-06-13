@@ -45,6 +45,7 @@ def shutdown():
     global halt
     halt = True
     client_socket.close()
+    print("Press enter to close the program")
     sys.exit(0)
 
 
