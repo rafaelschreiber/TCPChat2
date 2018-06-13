@@ -65,7 +65,10 @@ class connectedHost(threading.Thread):
 
 
     def closeConnection(self, exitmessage):
-        self.connection.send(bytes(exitmessage, "utf8"))
+        try:
+            self.connection.send(bytes(exitmessage, "utf8"))
+        except OSError:
+            pass
         self.connection.send(bytes("%exit", "utf8"))
         self.connection.close()
         self.isonline = False
