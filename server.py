@@ -10,6 +10,7 @@ halt = False # indicator variable for program shutdown
 
 # building socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.bind(("0.0.0.0", 2018))
 server_socket.listen(10)
 
@@ -38,10 +39,7 @@ class connectedHost(threading.Thread):
 
     def run(self):
         while not halt:
-            try:
-                message = self.connection.recv(2048)
-            except OSError:
-                return
+            message = self.connection.recv(2048)
             if (not message) or (message == bytes("%exit", "utf8")):
                 self.closeConnection("")
                 return
@@ -193,8 +191,6 @@ def shutdown():
     print("Closing socket...")
     server_socket.close()
     print("Exiting")
-    #print("If the program don't exits automatically you cann press CTRL+C.")
-    #print("You can ignore the following error")
     exit(0)
 
 
