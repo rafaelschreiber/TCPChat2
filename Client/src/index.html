@@ -5,13 +5,31 @@
     <meta name="author" content="Simon">
     <title>TCP-Chat</title>
 
+    <link rel="stylesheet" href="../assets/css/index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="connect.js"></script>
+    <script>if (window.module) module = window.module;</script>
 </head>
 <body>
 
 <div class="container">
+    <div id="userArea" class="row">
+        <div class="col-md-12">
+            <h3>TCPChat2 Login</h3>
+            <form id="userFormArea">
+                <div class="form-group">
+                    <input id="username" type="text" placeholder="Username"
+                    class="form-control" autocomplete="off">
+                    <input type="submit" class="btn btn-success"
+                    value="Login">
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="messageArea" class="row">
         <div class="col-md-4">
             <div class="well">
@@ -20,23 +38,32 @@
             </div>
         </div>
         <div class="col-md-8">
-            <section style="overflow: auto">
-                <div class="chat" id="chat"></div>
-            </section>
-                <form>
-                    <div class="form-group">
-                        <input id="message" type="text" placeholder="Message"
-                               class="form-control" autocomplete="off">
-                        <input type="submit" class="btn btn-success"
-                               value="Send Message"><!-- image of Send Message(in progress) -->
-                    </div>
-                </form>
+            <div id="chatArea">
+                <ul class="chat" id="chat"></ul>
+            </div>
+            <form id="messageFormArea">
+                <div class="form-group">
+                    <input id="message" type="text" placeholder="Message"
+                           class="form-control" autocomplete="off">
+                    <input type="submit" class="btn btn-success"
+                           value="Send Message"><!-- image of Send Message(in progress) -->
+                </div>
+            </form>
         </div>
     </div>
 </div>
 <script>
+    //Variables
+
+
+    //Send User data
+    /*$userFormArea.submit(function (event) {
+        event.preventDefault();
+        username = '%' + $user;
+        client.write()
+
+    });*/
 
 </script>
-
 </body>
 </html>
