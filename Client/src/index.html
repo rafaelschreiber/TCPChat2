@@ -5,26 +5,36 @@
     <meta name="author" content="Simon">
     <title>TCP-Chat</title>
 
-    <link rel="stylesheet" href="../assets/css/index.css">
+   <!--- <link rel="stylesheet" href="../assets/css/index.css">--->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="connect.js"></script>
     <script>if (window.module) module = window.module;</script>
+
+    <style>
+        body{
+            margin-top: 30px;
+        }
+        #messageArea{
+            display: none;
+        }
+    </style>
+
 </head>
+
 <body>
 
 <div class="container">
-    <div id="userArea" class="row">
+    <div id="userFromArea" class="row">
         <div class="col-md-12">
-            <h3>TCPChat2 Login</h3>
-            <form id="userFormArea">
+            <form id="userFrom">
                 <div class="form-group">
-                    <input id="username" type="text" placeholder="Username"
-                    class="form-control" autocomplete="off">
-                    <input type="submit" class="btn btn-success"
-                    value="Login">
+                    <label>Enter Username</label>
+                    <input id="username" type="text" class="form-control"/>
+                    <br/>
+                    <input type="submit" class="btn btn-success" value="Login"/>
                 </div>
             </form>
         </div>
@@ -33,37 +43,73 @@
     <div id="messageArea" class="row">
         <div class="col-md-4">
             <div class="well">
-                <h3>Online</h3>
-                <ul class="list-group"></ul>
+                <h3>Online Users</h3>
+                <ul class="list-group" id="users"></ul>
             </div>
         </div>
         <div class="col-md-8">
-            <div id="chatArea">
-                <ul class="chat" id="chat"></ul>
+            <div class="chat" id="chat">
+                <!--The whole chat is here-->
             </div>
-            <form id="messageFormArea">
+            <form id="messageFrom">
                 <div class="form-group">
-                    <input id="message" type="text" placeholder="Message"
-                           class="form-control" autocomplete="off">
-                    <input type="submit" class="btn btn-success"
-                           value="Send Message"><!-- image of Send Message(in progress) -->
+                    <label>Enter Message</label>
+                    <input id="message" type="text" class="form-control" autocomplete="off"/>
+                    <br/>
+                    <input type="submit" class="btn btn-success" value="Send Message"/>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<script>
-    //Variables
+<script type="text/javascript">
+    let net = require('net');
+    let client = new net.Socket();
 
+    var $message = $('#message');
+    var $chat = $('#chat');
+    var $messageArea = $('#messageArea');
+    var $userFormArea = $('#userFromArea');
+    var $userForm = $('#userFrom');
+    var $users = $('#users');
+    var $username = $('#username');
 
-    //Send User data
-    /*$userFormArea.submit(function (event) {
-        event.preventDefault();
-        username = '%' + $user;
-        client.write()
+    var input;
+    var user;
 
-    });*/
+    $('#userFrom').submit(function () {
+        input = document.getElementById("username").value;
+        user = input;
+    });
+
+    document.getElementById("userFrom").onsubmit = function(e) {
+        if(input) {
+            e.preventDefault();
+            $userFormArea.hide();
+            $messageArea.show();
+
+            client.connect(2018, "2bhif.at", function () {
+                var name = "%setusername " + input;
+                //var buffer_name = Buffer.from(name, 'utf8');
+                client.write(name);
+                $('#messageFrom').submit(function (event) {
+                    event.preventDefault();
+                    input = document.getElementById("message").value;
+                    client.write(input);
+                    $message.val('');
+                });
+
+                client.on('sendMessage', function (data) {
+                   console.log("Received: " + data);
+                });
+
+            });
+        }
+        $username.val('');
+    };
 
 </script>
+</body>
+
 </body>
 </html>
