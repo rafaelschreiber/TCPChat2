@@ -20,6 +20,9 @@ class connectedHost(threading.Thread):
         self.connection = connection
         self.ip, self.port = address
         self.id = iD
+        if self.ip in getConnectedIPs():
+            self.sendMessage("You are alreay connected with this IP")
+            return
         while not halt:
             username = str(self.connection.recv(2048), "utf8")
             username = cliInterpretor(username)
@@ -139,6 +142,15 @@ def ls(args):
             print("ls: Connection \'" + args[0] + "\' not found")
     else:
         print("ls: Expect max. 2 arguments")
+
+
+def getConnectedIPs():
+    ipList = []
+    for connection in connectionDictionary:
+        if connection.isonline is True:
+            ipList.append(connection.ip)
+    return ipList
+
 
 
 def setusername(args):
