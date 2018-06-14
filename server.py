@@ -21,7 +21,7 @@ class connectedHost(threading.Thread):
         self.ip, self.port = address
         self.id = iD
         if self.ip in getConnectedIPs():
-            self.sendMessage("You are alreay connected with this IP")
+            self.rejectConnection("You are already connected with this IP")
             return
         while not halt:
             username = str(self.connection.recv(2048), "utf8")
@@ -68,6 +68,19 @@ class connectedHost(threading.Thread):
             if connectionDictionary[connection].isonline is True:
                 if connectionDictionary[connection].id != self.id:
                     connectionDictionary[connection].sendMessage(message)
+
+
+    def rejectConnection(self, exitmessage):
+        try:
+            self.connection.send(bytes(exitmessage, "utf8"))
+            self.connection.send(bytes("%exit", "utf8"))
+        except:
+            return
+        self.connection.close()
+        self.isonline = False
+        print("Connection from " + self.ip + ":" + self.port + "rejected")
+        return
+
 
 
     def closeConnection(self, exitmessage=False):
@@ -147,8 +160,9 @@ def ls(args):
 def getConnectedIPs():
     ipList = []
     for connection in connectionDictionary:
-        if connection.isonline is True:
-            ipList.append(connection.ip)
+        if connectionDictionary[connection].isonline is True:
+            ipList.append(connectionDictionary[connection].ip)
+    print(ipList)
     return ipList
 
 
@@ -223,7 +237,10 @@ def acceptConnections():
         except ConnectionAbortedError:
             return
         connectionDictionary["conn" + str(connectionCounter)] = connectedHost(connection, address, connectionCounter)
-        connectionDictionary["conn" + str(connectionCounter)].start()
+        try:
+            connectionDictionary["conn" + str(connectionCounter)].start()
+        except RuntimeError:
+            print("Connection don't created, because initialization process failed")
         connectionCounter += 1
     return
 
