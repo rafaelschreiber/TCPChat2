@@ -78,7 +78,7 @@ class connectedHost(threading.Thread):
             return
         self.connection.close()
         self.isonline = False
-        print("Connection from " + self.ip + ":" + self.port + "rejected")
+        print("Connection from " + self.ip + ":" + str(self.port) + "rejected")
         return
 
 
