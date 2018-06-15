@@ -1,4 +1,5 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, Menu} = require('electron');
+const shell = require('electron').shell;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -11,8 +12,41 @@ function createWindow () {
     // und Laden der index.html der App.
     win.loadFile('src/index.html')
 
+    const template = [{
+        label: 'Edit',
+        submenu: [{
+            label: 'Go to our Website',
+            click: function () {
+                shell.openExternal('https://2bhif.at');
+            }
+        }, {
+            label: 'Quit',
+            accelerator: 'CmdOrCtrl+q',
+            role: 'quit'
+        }]
+    }, {
+        label: 'View',
+        submenu: [{
+            label: 'Toggle Developer Tools',
+            accelerator: (() => {
+                if(process.platform === 'darwin'){
+                    return 'Alt+Command+I';
+                } else {
+                    return 'Ctrl+Shift+I';
+                }
+            })(),
+            click: (items, focusedWindow) => {
+                if(focusedWindow){
+                    focusedWindow.toggleDevTools();
+                }
+            }
+        }]
+    }];
+
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
     // Open the DevTools.
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 
     // Ausgegeben, wenn das Fenster geschlossen wird.
     win.on('closed', () => {

@@ -4,8 +4,9 @@ body{
 
 #messageArea{
     display: none;
+    padding-top: 10px;
 }
 
-#userArea{
+#userFrom{
     margin: 20%;
 }

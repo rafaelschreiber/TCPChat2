@@ -5,23 +5,15 @@
     <meta name="author" content="Simon">
     <title>TCP-Chat</title>
 
-   <!--- <link rel="stylesheet" href="../assets/css/index.css">--->
+   <link rel="stylesheet" href="../assets/css/index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script>
+        require('../render.js');
+    </script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="connect.js"></script>
     <script>if (window.module) module = window.module;</script>
-
-    <style>
-        body{
-            margin-top: 30px;
-        }
-        #messageArea{
-            display: none;
-        }
-    </style>
-
 </head>
 
 <body>
@@ -31,8 +23,9 @@
         <div class="col-md-12">
             <form id="userFrom">
                 <div class="form-group">
-                    <label>Enter Username</label>
-                    <input id="username" type="text" class="form-control"/>
+                    <h3>TCP-Chat2 Login:</h3>
+                    <input id="username" type="text"
+                           class="form-control" placeholder="Enter Username"/>
                     <br/>
                     <input type="submit" class="btn btn-success" value="Login"/>
                 </div>
@@ -53,8 +46,8 @@
             </div>
             <form id="messageFrom">
                 <div class="form-group">
-                    <label>Enter Message</label>
-                    <input id="message" type="text" class="form-control" autocomplete="off"/>
+                    <input id="message" type="text" placeholder="Enter Message"
+                           class="form-control" autocomplete="off"/>
                     <br/>
                     <input type="submit" class="btn btn-success" value="Send Message"/>
                 </div>
@@ -64,6 +57,7 @@
 </div>
 <script type="text/javascript">
     let net = require('net');
+    let fs = require('fs');
     let client = new net.Socket();
 
     var $message = $('#message');
@@ -88,7 +82,9 @@
             $userFormArea.hide();
             $messageArea.show();
 
-            client.connect(2018, "2bhif.at", function () {
+            client_listener();
+
+            /*client.connect(2018, "localhost", function () {
                 var name = "%setusername " + input;
                 //var buffer_name = Buffer.from(name, 'utf8');
                 client.write(name);
@@ -98,16 +94,13 @@
                     client.write(input);
                     $message.val('');
                 });
-
-                client.on('sendMessage', function (data) {
-                   console.log("Received: " + data);
+                client.on('data', function (data) {
+                    console.log(data.username);
                 });
-
-            });
+            });*/
         }
         $username.val('');
     };
-
 </script>
 </body>
 
