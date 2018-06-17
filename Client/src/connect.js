@@ -1,8 +1,14 @@
+const electron = require('electron');
+const path = require('path');
+const BrowserWindow = electron.remote.BrowserWindow;
+
+
+const add_server_btn = document.getElementById("add_server_btn");
+
 
 function client_listener() {
     client.connect(2018, "localhost", function () {
         send_username();
-
     });
 }
 
@@ -29,3 +35,10 @@ function receive_data() {
         console.log(data.username);
     });
 }
+
+add_server_btn.addEventListener('click', function (event) {
+    const modalPath = path.join('/',__dirname, 'add.html');
+    let win = new BrowserWindow({width: 300, height:400, resizable: false});
+    win.loadFile(modalPath);
+    win.show();
+});

@@ -12,13 +12,18 @@
         require('../render.js');
     </script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="connect.js"></script>
+
     <script>if (window.module) module = window.module;</script>
 </head>
 
 <body>
 
 <div class="container">
+    <div class="row">
+        <input id="add_server_btn"
+               class="btn btn-success" type="button"
+               value="Add new server">
+    </div>
     <div id="userFromArea" class="row">
         <div class="col-md-12">
             <form id="userFrom">
@@ -82,27 +87,12 @@
             $userFormArea.hide();
             $messageArea.show();
 
-            client_listener();
-
-            /*client.connect(2018, "localhost", function () {
-                var name = "%setusername " + input;
-                //var buffer_name = Buffer.from(name, 'utf8');
-                client.write(name);
-                $('#messageFrom').submit(function (event) {
-                    event.preventDefault();
-                    input = document.getElementById("message").value;
-                    client.write(input);
-                    $message.val('');
-                });
-                client.on('data', function (data) {
-                    console.log(data.username);
-                });
-            });*/
+            client_listener(); //create a connection ,listen and send to server
+                               //basically the whole program
         }
         $username.val('');
     };
 </script>
-</body>
-
+<script src="connect.js"></script>
 </body>
 </html>

@@ -1,9 +1,11 @@
 const {app, BrowserWindow, Menu} = require('electron');
 const shell = require('electron').shell;
 
+
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
+let win;
 
 function createWindow () {
     // Erstellen des Browser-Fensters.
@@ -16,15 +18,26 @@ function createWindow () {
         label: 'Edit',
         submenu: [{
             label: 'Go to our Website',
+
+            accelerator: (() =>{
+                if(process.platform === 'darwin'){
+                    return 'Alt+Command+B';
+                } else {
+                    return 'Ctrl+Shift+B';
+                }
+            })(),
             click: function () {
                 shell.openExternal('https://2bhif.at');
             }
-        }, {
+
+        },{
+            type: 'separator'
+        },{
             label: 'Quit',
             accelerator: 'CmdOrCtrl+q',
             role: 'quit'
         }]
-    }, {
+    },{
         label: 'View',
         submenu: [{
             label: 'Toggle Developer Tools',
