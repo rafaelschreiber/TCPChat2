@@ -1,0 +1,22 @@
+# TCPChat Header
+{
+    "source":"127.0.0.1" # sender IP-Adresse
+    "username":"rafi" # eigentlich selbsterklärend
+    "message":"%send Hallo Jungs!" # eigentliche message
+}
+
+Clientseitig müssen die Befehle nicht interpretiert werden, da dies nicht nötig ist.
+Der Client kann so wie immer nachrichten empfangen, er muss nur auf das %exit achten.
+
+
+
+Liste der Befehle:
+%exit # exit code. Weißt dem Server an, dass der Client die Verbindung schließt bzw. Weißt dem Client an das die Verbindung getrennt wird.
+%kick connection kick-message # kickt eine verbindung mit einer gewissen Nachricht. Nachricht is optional.
+%ls connection # listet alle verbindungen auf bzw. zeigt die detials an mit angegebener verbindung
+%setusername connection newUsername # ändert den nutzername der dazugehörigen verbindung
+%clear # Rafis lieblingsbefehl. Cleart die Shell. Bei GUIs kein gebrauch
+%send reciever message # sendet eine nachricht an reciever mit dem text in message. Wenn reciever == * dann wird ein broadcast ausgeführt
+
+
+# ich bin natürlich gerne offen für weitere implementirungen serverseitig :)
