@@ -48,7 +48,7 @@ class connectedClient(threading.Thread):
             else:
                 continue
         self.isonline = True
-        self.broadcast(self.username + " is online")
+        self.broadcast({"username":self.username, "content":"is now Online"})
         print(self.username + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
         threading.Thread.__init__(self)
         self.daemon = True
@@ -58,6 +58,7 @@ class connectedClient(threading.Thread):
     def run(self):
         while True:
             data = str(self.connection.recv(2048), "utf8")
+            print(data)
             data = json.loads(data)
             try:
                 username = data["username"]
@@ -94,6 +95,7 @@ class connectedClient(threading.Thread):
 
     def send(self, data):
         data = json.dumps(data)
+        print("Sending " + self.username + " " + data)
         self.connection.send(bytes(data, "utf8"))
 
 
@@ -157,7 +159,3 @@ while True:
         print(connDict)
     else:
         print("Command not found")
-
-
-
-

@@ -51,6 +51,7 @@ def shutdown():
     sys.exit(0)
 
 
+
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 connectionInfo = getConnectionInfo()
 try:
@@ -71,7 +72,7 @@ while not halt:
         msg = str(input(">>> "))
         if msg == "%exit":
             client_socket.send(bytes("%exit", "utf8"))
-            print("Connection closed")
+            print("Connection closed by you")
             shutdown()
             exit(0)
         elif msg == "%clear":
