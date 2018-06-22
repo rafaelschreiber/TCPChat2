@@ -1,8 +1,7 @@
 # TCPChat Header
 {
-    "source":"127.0.0.1" # sender IP-Adresse
     "username":"rafi" # eigentlich selbsterklärend
-    "message":"%send Hallo Jungs!" # eigentliche message
+    "content":"%send * Hallo Jungs!" # eigentliche message
 }
 
 Clientseitig müssen die Befehle nicht interpretiert werden, da dies nicht nötig ist.

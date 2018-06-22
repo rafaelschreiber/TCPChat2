@@ -13,6 +13,7 @@
 from functions import *
 import socket
 import threading
+import json
 
 connDict = { } # This dictionary contains all threaded connections
 
@@ -33,11 +34,14 @@ class connectedClient(threading.Thread):
             username = cliInterpretor(username)
             if len(username) == 2:
                 if username[0] == "%setusername":
-                    self.username = username[2]
+                    self.username = username[1]
+                    break
                 else:
                     continue
             elif len(username) >= 1:
                 if username[0] == "%exit":
+                    self.closeConnectionByServer()
+                    print("The connection on " + self.ip + ":" + str(self.port) + "closed without username")
                     return
                 else:
                     continue
@@ -48,4 +52,112 @@ class connectedClient(threading.Thread):
         print(self.username + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
         threading.Thread.__init__(self)
         self.daemon = True
+        self.start()
+
+
+    def run(self):
+        while True:
+            data = str(self.connection.recv(2048), "utf8")
+            data = json.loads(data)
+            try:
+                username = data["username"]
+                message = data["content"]
+            except KeyError:
+                continue # throw invalid packet away
+            if message[0] != "%":
+                continue # throw packet with invalid message away
+            message = cliInterpretor(message)
+            try:
+                if message[0] == "%exit":
+                    self.closeConnectionByClient()
+                    print(self.username + " on " + self.ip + ":" + str(self.port) + "disconnected by client")
+                    return
+                elif message[0] == "%send":
+                    if message[1] == '*':
+                        data = {"username":username, "content":message[2]}
+                        self.broadcast(data)
+                    elif message[1] in getUsernames(True):
+                        data = {"username":username, "content":message[2]}
+                        connDict[usernameToConnection(message[1])].send(data)
+                    else:
+                        continue # throw packet with invalid username away
+            except IndexError:
+                continue # throw packet packet away when server cannot process it
+
+
+
+    def broadcast(self, data):
+        for connection in connDict:
+            if connDict[connection].isonline is True:
+                connDict[connection].send(data)
+
+
+    def send(self, data):
+        data = json.dumps(data)
+        self.connection.send(bytes(data, "utf8"))
+
+
+    def closeConnectionByClient(self):
+        self.connection.close()
+        self.isonline = False
+
+
+    def closeConnectionByServer(self, exitmessage = False):
+        if exitmessage:
+            self.send(bytes(exitmessage, "utf8"))
+        self.send(bytes("%exit", "utf8"))
+        self.connection.close()
+        self.isonline = False
+
+
+def getUsernames(connected = False):
+    usernames = [ ]
+    for connection in connDict:
+        if connected:
+            if connDict[connection].isonline is True:
+                usernames.append(connDict[connection].username)
+        else:
+            usernames.append(connDict[connection].username)
+    return usernames
+
+
+def usernameToConnection(username):
+    for connection in connDict:
+        if connDict[connection].username == username:
+            return connection
+    return False
+
+
+def connectionToUsername(connection):
+    try:
+        return connDict[connection].username
+    except KeyError:
+        return False
+
+
+def acceptConnections():
+    print("Started connection listener")
+    global connDict
+    connectionCounter = 0
+    while True:
+        connection, address = server_socket.accept()
+        connDict["conn" + str(connectionCounter)] = connectedClient(connection, address, connectionCounter)
+        connectionCounter += 1
+
+
+# starting thread for accept connections
+acceptConnectionsThread = threading.Thread(target=acceptConnections)
+acceptConnectionsThread.daemon = True
+acceptConnectionsThread.start()
+
+while True:
+    print()
+    command = str(input("$ "))
+    if command == "ls":
+        print(connDict)
+    else:
+        print("Command not found")
+
+
+
 
