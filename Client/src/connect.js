@@ -5,6 +5,7 @@ const BrowserWindow = electron.remote.BrowserWindow;
 
 const add_server_btn = document.getElementById("add_server_btn");
 
+let username;
 
 function client_listener() {
     client.setEncoding('utf8');
@@ -34,7 +35,7 @@ function send_data() {
 
 function receive_data() {
     client.on('data', function (data) {
-        console.log((data.username).toString());
+        console.log();
     });
 }
 

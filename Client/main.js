@@ -35,7 +35,10 @@ function createWindow () {
         },{
             label: 'Quit',
             accelerator: 'CmdOrCtrl+q',
-            role: 'quit'
+            role: 'quit',
+            click: function () {
+                client.write("%exit");
+            }
         }]
     },{
         label: 'View',
