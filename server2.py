@@ -96,7 +96,7 @@ class connectedClient(threading.Thread):
 
 
     def send(self, data):
-        data = json.dumps(data)
+        data = json.dumps(data, ensure_ascii=False)
         print("Sending " + self.username + " " + data)
         try:
             self.connection.send(bytes(data, "utf8"))
