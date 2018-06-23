@@ -170,7 +170,6 @@ def connectionToUsername(connection):
 
 
 def acceptConnections():
-    print("Started connection listener")
     global connDict
     connectionCounter = 0
     while True:
@@ -203,10 +202,20 @@ def shutdown(args):
 def ls(args):
     if len(args) == 0:
         if len(connDict) == 0:
-            print("There are no connections")
+            print("ls: There are no connections")
             return
         for connection in connDict:
             print(connection + ": " + str(connDict[connection]))
+    if len(args) == 1:
+        try:
+            print("ID:         " + str(connDict[args[0]].id))
+            print("Connection: " + str(connDict[args[0]].connection))
+            print("IP-Address: " + str(connDict[args[0]].ip))
+            print("Port:       " + str(connDict[args[0]].port))
+            print("Username:   " + str(connDict[args[0]].username))
+            print("Is Online:  " + str(connDict[args[0]].isonline))
+        except KeyError:
+            print("ls: Connection \'" + args[0] + "\' doesn't exist")
     else:
         print("ls: Requires max. 1 argument")
 
@@ -232,7 +241,7 @@ def changeDebug(args):
             else:
                 print("Debug is currently turned off")
         else:
-            print("debug: Unknown argument: " + args[0])
+            print("debug: Unknown argument \'" + args[0] + "\'")
     else:
         print("debug: Requires exactly 1 argument")
 
@@ -242,6 +251,7 @@ acceptConnectionsThread = threading.Thread(target=acceptConnections)
 acceptConnectionsThread.daemon = True
 acceptConnectionsThread.start()
 
+print("Welcome to TCPChat2 server console!")
 while True:
     print()
     command = str(input("$ "))
