@@ -7,6 +7,7 @@ const add_server_btn = document.getElementById("add_server_btn");
 
 
 function client_listener() {
+    client.setEncoding('utf8');
     client.connect(2018, "localhost", function () {
         send_username();
     });
@@ -25,6 +26,7 @@ function send_data() {
     $('#messageFrom').submit(function (event) {
         event.preventDefault();
         input = document.getElementById("message").value;
+        input = "%send * " + input;
         client.write(input);
         $message.val('');
     });
@@ -32,7 +34,7 @@ function send_data() {
 
 function receive_data() {
     client.on('data', function (data) {
-        console.log(data.username);
+        console.log((data.username).toString());
     });
 }
 
