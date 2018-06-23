@@ -62,9 +62,9 @@ class connectedClient(threading.Thread):
 
     def run(self):
         while True:
-            data = str(self.connection.recv(2048), "utf8")
-            print(data)
-            if data[0] != "%":
+            message = str(self.connection.recv(2048), "utf8")
+            print(message)
+            if message[0] != "%":
                 continue # throw packet with invalid message away
             message = cliInterpretor(message)
             try:
