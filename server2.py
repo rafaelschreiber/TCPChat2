@@ -39,7 +39,7 @@ class connectedClient(threading.Thread):
             username = cliInterpretor(username)
             if len(username) == 2:
                 if username[0] == "%setusername":
-                    if username[1] not in getUsernames(connected=True):
+                    if username[1] not in getUsernames(connected=True) or username[1] != '*' or username[1] != "server":
                         self.username = username[1]
                         break
                     else:
@@ -73,7 +73,7 @@ class connectedClient(threading.Thread):
                 self.broadcast(self.username, "%isoffline", metoo=False)
                 return
             try:
-                print("Debug:" + message) # just for debugging
+                print("Debug: " + message) # just for debugging
             except UnicodeEncodeError:
                 print("Error while decoding message")
             if message[0] != "%":
