@@ -39,7 +39,7 @@ class connectedClient(threading.Thread):
             username = cliInterpretor(username)
             if len(username) == 2:
                 if username[0] == "%setusername":
-                    if username[1] not in getUsernames():
+                    if username[1] not in getUsernames(connected=True) or username[1] != '*' or username[1] != "server":
                         self.username = username[1]
                         break
                     else:
@@ -72,7 +72,10 @@ class connectedClient(threading.Thread):
                 print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
                 self.broadcast(self.username, "%isoffline", metoo=False)
                 return
-            print(message)
+            try:
+                print("Debug: " + message) # just for debugging
+            except UnicodeEncodeError:
+                print("Error while decoding message")
             if message[0] != "%":
                 continue # throw packet with invalid message away
             message = cliInterpretor(message)
@@ -106,7 +109,10 @@ class connectedClient(threading.Thread):
     def send(self, username, content):
         data = {"username":username, "content":content}
         data = json.dumps(data, ensure_ascii=False)
-        print("Sending " + self.username + " " + data)
+        try:
+            print("Sending " + self.username + " " + data)
+        except UnicodeEncodeError:
+            print("Error while decoding message") # just for debugging
         self.connection.send(bytes(data, "utf8"))
 
 
