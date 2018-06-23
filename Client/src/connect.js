@@ -34,8 +34,8 @@ function data_traffic() {
         console.log(message.username + " : " + message.content);
         if(message.content === '%isonline'){
             $chat.append('<div class="well" style="color: green">'+ message.username + ' is now online </div>');
-        } else if(message.content === ) {
-            $chat.append('<div class="well" style="color: red">'+ message.username + ' is now offline </div>')
+        } else if(message.content === '%isoffline') {
+            $chat.append('<div class="well" style="color: red">'+ message.username + ' is now offline </div>');
         }else{
             $chat.append('<div class="well"><strong>'+
                 message.username +'</strong> : '+
