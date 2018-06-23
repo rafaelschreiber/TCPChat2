@@ -27,7 +27,7 @@ function send_data() {
     $('#messageFrom').submit(function (event) {
         event.preventDefault();
         input = document.getElementById("message").value;
-        input = "%send * " + input;
+        input = '%send * ' + '"'+input + '"';
         client.write(input);
         $message.val('');
     });
@@ -35,7 +35,7 @@ function send_data() {
 
 function receive_data() {
     client.on('data', function (data) {
-        console.log();
+        console.log("test");
     });
 }
 

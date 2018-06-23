@@ -66,8 +66,7 @@ function createWindow () {
         // Dereferenzieren des Fensterobjekts, normalerweise würden Sie Fenster
         // in einem Array speichern, falls Ihre App mehrere Fenster unterstützt.
         // Das ist der Zeitpunkt, an dem Sie das zugehörige Element löschen sollten.
-        win = null
-        client.write("%exit");
+        win = null;
     })
 }
 
