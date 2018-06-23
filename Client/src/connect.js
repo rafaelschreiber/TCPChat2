@@ -7,7 +7,7 @@ const add_server_btn = document.getElementById("add_server_btn");
 
 function client_listener() {
     client.setEncoding('utf8');
-    client.connect(2018, "localhost", function () {
+    client.connect(2018, "2bhif.at", function () {
         data_traffic();
     });
 }
