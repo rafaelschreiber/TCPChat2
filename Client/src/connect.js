@@ -17,7 +17,7 @@ function data_traffic() {
     //send server username
     var name = "%setusername " + input;
     client.write(name);
-
+    client.write("%getusers");
     //send message
     $('#messageFrom').submit(function (event) {
         event.preventDefault();
@@ -43,6 +43,7 @@ function data_traffic() {
 
             $chat.append('<div class="well" style="color: red">'+ message.username + ' is now offline </div>');
             scroll_down();
+            client.write("%getusers");
 
         } else if (message.content === '%exit' && message.username === 'server'){
 
