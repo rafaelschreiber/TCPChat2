@@ -27,20 +27,15 @@ function data_traffic() {
     });
 
     //receive message
-    client.on('data', function (data) {
-        console.log(data.toString);
-        $chat.append('<div class="well">'+
-            '<strong>'+ data.username +'</strong>'+'<div>'+
-            data.content+'</div>');
-    });
-
+    client.on('data', (data) => {
+        console.log(data.toString());
+        var message = JSON.parse(data);
+        console.log(message.username + " : " + message.content);
+        $chat.append('<div class="well"><strong>'+
+            message.username +'</strong> : '+
+            message.content+'</div>');
+    })
     //get all online users
-    client.on('get users', function (data) {
-        for(i =0; data.length; i++){
-            html += '<li class="list-group-item">'+data[i]+'</li>';
-        }
-    });
-    $users.html(html);
 
 }
 
