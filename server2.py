@@ -38,7 +38,8 @@ class connectedClient(threading.Thread):
                         self.username = username[1]
                         break
                     else:
-
+                        self.send("%usernametaken")
+                        continue
                 else:
                     continue
             elif len(username) >= 1:
