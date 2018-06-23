@@ -10,3 +10,9 @@ body{
 #userFrom{
     margin: 20%;
 }
+
+#chat{
+    width: 615px;
+    height: 450px;
+    overflow: auto;
+}

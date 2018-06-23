@@ -34,12 +34,17 @@ function data_traffic() {
         console.log(message.username + " : " + message.content);
         if(message.content === '%isonline'){
             $chat.append('<div class="well" style="color: green">'+ message.username + ' is now online </div>');
+            scroll_down();
+
         } else if(message.content === '%isoffline') {
             $chat.append('<div class="well" style="color: red">'+ message.username + ' is now offline </div>');
+            scroll_down();
+
         }else{
             $chat.append('<div class="well"><strong>'+
                 message.username +'</strong> : '+
                 message.content+'</div>');
+            scroll_down();
         }
     });
 
@@ -49,8 +54,14 @@ function data_traffic() {
     });
 
     //Online Users
+    /*client.on('%getusers', (data)=>{
+        console.log(data.toString());
+    });*/
 
+}
 
+function scroll_down() {
+    document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
 }
 
 function shutdown_client(){
