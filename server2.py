@@ -41,7 +41,7 @@ class connectedClient(threading.Thread):
             username = cliInterpretor(username)
             if len(username) == 2:
                 if username[0] == "%setusername":
-                    if username[1] not in getUsernames(connected=True) and username[1] != "*" and username[1] != "server":
+                    if username[1].lower() not in [name.lower() for name in getUsernames(connected=True)] and username[1] != "*" and username[1] != "server":
                         self.username = username[1]
                         break
                     else:
