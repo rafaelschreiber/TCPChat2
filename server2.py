@@ -98,7 +98,11 @@ class connectedClient(threading.Thread):
     def send(self, data):
         data = json.dumps(data)
         print("Sending " + self.username + " " + data)
-        self.connection.send(bytes(data, "utf8"))
+        try:
+            self.connection.send(bytes(data, "utf8"))
+        except BrokenPipeError:
+            self.isonline = False
+            pass
 
 
     def closeConnectionByClient(self):
