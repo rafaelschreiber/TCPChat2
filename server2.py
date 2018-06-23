@@ -34,8 +34,11 @@ class connectedClient(threading.Thread):
             username = cliInterpretor(username)
             if len(username) == 2:
                 if username[0] == "%setusername":
-                    self.username = username[1]
-                    break
+                    if username[1] not in getUsernames():
+                        self.username = username[1]
+                        break
+                    else:
+
                 else:
                     continue
             elif len(username) >= 1:
@@ -76,7 +79,7 @@ class connectedClient(threading.Thread):
                 elif message[0] == "%send":
                     if message[1] == '*':
                         data = {"username":username, "content":message[2]}
-                        self.broadcast(data)
+                        self.broadcast(data, False)
                     elif message[1] in getUsernames(True):
                         data = {"username":username, "content":message[2]}
                         connDict[usernameToConnection(message[1])].send(data)
@@ -86,11 +89,14 @@ class connectedClient(threading.Thread):
                 continue # throw packet packet away when server cannot process it
 
 
-
-    def broadcast(self, data):
+    def broadcast(self, data, metoo = True):
         for connection in connDict:
             if connDict[connection].isonline is True:
-                connDict[connection].send(data)
+                if not metoo:
+                    if connDict[connection].username != self.username:
+                        connDict[connection].send(data)
+                else:
+                    connDict[connection].send(data)
 
 
     def send(self, data):
