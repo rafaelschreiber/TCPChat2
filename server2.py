@@ -32,6 +32,10 @@ class connectedClient(threading.Thread):
         self.username = ""
         while True:
             username = str(self.connection.recv(2048), "utf8")
+            if not username:
+                self.closeConnectionByClient()
+                print(self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " closed his connection without login")
+                return
             username = cliInterpretor(username)
             if len(username) == 2:
                 if username[0] == "%setusername":
@@ -39,30 +43,35 @@ class connectedClient(threading.Thread):
                         self.username = username[1]
                         break
                     else:
-                        self.send("%usernametaken")
+                        self.send("server", "%usernametaken")
                         continue
                 else:
                     continue
             elif len(username) >= 1:
                 if username[0] == "%exit":
-                    self.closeConnectionByServer()
-                    print("The connection on " + self.ip + ":" + str(self.port) + "closed without username")
+                    self.closeConnectionByClient()
+                    print(self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " closed his connection without login")
                     return
                 else:
                     continue
             else:
                 continue
         self.isonline = True
-        self.broadcast({"username":self.username, "content":"is now Online"})
-        print(self.username + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
         threading.Thread.__init__(self)
         self.daemon = True
         self.start()
+        self.broadcast(self.username, "%isonline", metoo=False)
+        print(self.username + " is online on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id))
 
 
     def run(self):
         while True:
             message = str(self.connection.recv(2048), "utf8")
+            if not message: # happens if socket is broken
+                self.closeConnectionByClient()
+                print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
+                self.broadcast(self.username, "%isoffline", metoo=False)
+                return
             print(message)
             if message[0] != "%":
                 continue # throw packet with invalid message away
@@ -70,39 +79,35 @@ class connectedClient(threading.Thread):
             try:
                 if message[0] == "%exit":
                     self.closeConnectionByClient()
-                    print(self.username + " on " + self.ip + ":" + str(self.port) + "disconnected by client")
+                    print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
+                    self.broadcast(self.username, "%isoffline", metoo=False)
                     return
                 elif message[0] == "%send":
                     if message[1] == '*':
-                        data = {"username":self.username, "content":message[2]}
-                        self.broadcast(data, False)
+                        self.broadcast(self.username, message[2])
                     elif message[1] in getUsernames(True):
-                        data = {"username":self.username, "content":message[2]}
-                        connDict[usernameToConnection(message[1])].send(data)
+                        connDict[usernameToConnection(message[1])].send(self.username, message[2])
                     else:
                         continue # throw packet with invalid username away
             except IndexError:
                 continue # throw packet packet away when server cannot process it
 
 
-    def broadcast(self, data, metoo = True):
+    def broadcast(self, username, content, metoo = True):
         for connection in connDict:
             if connDict[connection].isonline is True:
                 if not metoo:
                     if connDict[connection].username != self.username:
-                        connDict[connection].send(data)
+                        connDict[connection].send(username, content)
                 else:
-                    connDict[connection].send(data)
+                    connDict[connection].send(username, content)
 
 
-    def send(self, data):
+    def send(self, username, content):
+        data = {"username":username, "content":content}
         data = json.dumps(data, ensure_ascii=False)
         print("Sending " + self.username + " " + data)
-        try:
-            self.connection.send(bytes(data, "utf8"))
-        except BrokenPipeError:
-            self.isonline = False
-            pass
+        self.connection.send(bytes(data, "utf8"))
 
 
     def closeConnectionByClient(self):
