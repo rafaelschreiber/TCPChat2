@@ -36,9 +36,6 @@ function createWindow () {
             label: 'Quit',
             accelerator: 'CmdOrCtrl+q',
             role: 'quit',
-            click: function () {
-                client.write("%exit");
-            }
         }]
     },{
         label: 'View',
@@ -70,6 +67,7 @@ function createWindow () {
         // in einem Array speichern, falls Ihre App mehrere Fenster unterstützt.
         // Das ist der Zeitpunkt, an dem Sie das zugehörige Element löschen sollten.
         win = null
+        client.write("%exit");
     })
 }
 
