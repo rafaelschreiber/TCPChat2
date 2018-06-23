@@ -29,7 +29,7 @@ class connectedClient(threading.Thread):
         self.connection = connection
         self.ip, self.port = address
         self.id = id
-        self.username = None
+        self.username = ""
         while True:
             username = str(self.connection.recv(2048), "utf8")
             username = cliInterpretor(username)
