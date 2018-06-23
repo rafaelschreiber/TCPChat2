@@ -206,7 +206,7 @@ def ls(args):
             return
         for connection in connDict:
             print(connection + ": " + str(connDict[connection]))
-    if len(args) == 1:
+    elif len(args) == 1:
         try:
             print("ID:         " + str(connDict[args[0]].id))
             print("Connection: " + str(connDict[args[0]].connection))
