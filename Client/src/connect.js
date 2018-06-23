@@ -31,16 +31,32 @@ function data_traffic() {
     client.on('data', (data) => {
         console.log(data.toString());
         var message = JSON.parse(data);
+
         console.log(message.username + " : " + message.content);
         if(message.content === '%isonline'){
+
             $chat.append('<div class="well" style="color: green">'+ message.username + ' is now online </div>');
             scroll_down();
+            client.write("%getusers");
 
         } else if(message.content === '%isoffline') {
+
             $chat.append('<div class="well" style="color: red">'+ message.username + ' is now offline </div>');
             scroll_down();
 
-        }else{
+        } else if (message.content === '%exit' && message.username === 'server'){
+
+            $chat.append('<div class="well" style="color: red"><strong>Your are kick from the Server</strong></div>')
+            scroll_down();
+            setTimeout(function () {
+            }, 999999999);
+            $userFormArea.show();
+            $messageArea.hide();
+
+        }else if(message.username === 'server' && message.content === '%userlist'){
+            get_online_users(message.userlist);
+        } else {
+
             $chat.append('<div class="well"><strong>'+
                 message.username +'</strong> : '+
                 message.content+'</div>');
@@ -53,11 +69,14 @@ function data_traffic() {
         client.write("%exit");
     });
 
-    //Online Users
-    /*client.on('%getusers', (data)=>{
-        console.log(data.toString());
-    });*/
+}
 
+function get_online_users(data) {
+    var html = '';
+    for(i = 0; i < data.length; i++){
+        html += '<li class="list-group-item">'+data[i]+'</li>'
+    }
+    $users.html(html);
 }
 
 function scroll_down() {
