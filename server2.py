@@ -74,7 +74,7 @@ class connectedClient(threading.Thread):
                 return
             try:
                 print("Debug:" + message) # just for debugging
-            except UnicodeDecodeError:
+            except UnicodeEncodeError:
                 print("Error while decoding message")
             if message[0] != "%":
                 continue # throw packet with invalid message away
@@ -111,7 +111,7 @@ class connectedClient(threading.Thread):
         data = json.dumps(data, ensure_ascii=False)
         try:
             print("Sending " + self.username + " " + data)
-        except UnicodeDecodeError:
+        except UnicodeEncodeError:
             print("Error while decoding message") # just for debugging
         self.connection.send(bytes(data, "utf8"))
 
