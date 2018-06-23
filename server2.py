@@ -16,6 +16,7 @@ import threading
 import json
 
 connDict = { } # This dictionary contains all threaded connections
+debug = False # indicator variable for debugging
 
 # creating main socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,10 +26,10 @@ server_socket.listen(5)
 
 
 class connectedClient(threading.Thread):
-    def __init__(self, connection, address, id):
+    def __init__(self, connection, address, iD):
         self.connection = connection
         self.ip, self.port = address
-        self.id = id
+        self.id = iD
         self.username = ""
         while True:
             username = str(self.connection.recv(2048), "utf8")
@@ -72,10 +73,11 @@ class connectedClient(threading.Thread):
                 print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
                 self.broadcast(self.username, "%isoffline", metoo=False)
                 return
-            try:
-                print("Debug: " + message) # just for debugging
-            except UnicodeEncodeError:
-                print("Error while decoding message")
+            if debug:
+                try:
+                    print("debug: Incoming: " + message) # just for debugging
+                except UnicodeEncodeError:
+                    print("debug: Incoming: Error while decoding ingoing message")
             if message[0] != "%":
                 continue # throw packet with invalid message away
             message = cliInterpretor(message)
@@ -109,10 +111,11 @@ class connectedClient(threading.Thread):
     def send(self, username, content):
         data = {"username":username, "content":content}
         data = json.dumps(data, ensure_ascii=False)
-        try:
-            print("Sending " + self.username + " " + data)
-        except UnicodeEncodeError:
-            print("Error while decoding message") # just for debugging
+        if debug:
+            try:
+                print("debug: Outgoing: Sending " + self.username + " " + data)
+            except UnicodeEncodeError:
+                print("debug: Outgoing: Error while decoding outgoing message") # just for debugging
         self.connection.send(bytes(data, "utf8"))
 
 
@@ -123,8 +126,8 @@ class connectedClient(threading.Thread):
 
     def closeConnectionByServer(self, exitmessage = False):
         if exitmessage:
-            self.send(bytes(exitmessage, "utf8"))
-        self.send(bytes("%exit", "utf8"))
+            self.send("server", exitmessage)
+        self.send("server", "%exit")
         self.connection.close()
         self.isonline = False
 
@@ -164,6 +167,64 @@ def acceptConnections():
         connectionCounter += 1
 
 
+def shutdown(args):
+    global server_socket
+    if len(args) == 0:
+        print("Closing all connections")
+        for connection in connDict:
+            if connDict[connection].isonline is True:
+                connDict[connection].closeConnectionByServer("Server Closed")
+    elif len(args) == 1:
+        print("Closing all connections")
+        for connection in connDict:
+            if connDict[connection].isonline is True:
+                connDict[connection].closeConnectionByServer(args[0])
+    else:
+        print("exit: Requires max. 1 argument")
+        return
+    print("Closing server socket")
+    server_socket.close()
+    print("Stopping")
+    exit(0)
+
+
+def ls(args):
+    if len(args) == 0:
+        if len(connDict) == 0:
+            print("There are no connections")
+            return
+        for connection in connDict:
+            print(connection + ": " + str(connDict[connection]))
+    else:
+        print("ls: Requires max. 1 argument")
+
+
+def changeDebug(args):
+    global debug
+    if len(args) == 1:
+        if args[0] == "on":
+            if debug is True:
+                print("Debug is already on")
+            else:
+                print("Turned debug on")
+                debug = True
+        elif args[0] == "off":
+            if debug is False:
+                print("Debug is already off")
+            else:
+                print("Turned debug off")
+                debug = False
+        elif args[0] == "status":
+            if debug is True:
+                print("Debug is currently turned on")
+            else:
+                print("Debug is currently turned off")
+        else:
+            print("debug: Unknown argument: " + args[0])
+    else:
+        print("debug: Requires exactly 1 argument")
+
+
 # starting thread for accept connections
 acceptConnectionsThread = threading.Thread(target=acceptConnections)
 acceptConnectionsThread.daemon = True
@@ -172,7 +233,15 @@ acceptConnectionsThread.start()
 while True:
     print()
     command = str(input("$ "))
-    if command == "ls":
-        print(connDict)
+    command = cliInterpretor(command)
+    if len(command) == 0:
+        print("Command not found")
+        continue
+    if command[0] == "exit":
+        shutdown(command[1:])
+    elif command[0] == "ls":
+        ls(command[1:])
+    elif command[0] == "debug":
+        changeDebug(command[1:])
     else:
         print("Command not found")
