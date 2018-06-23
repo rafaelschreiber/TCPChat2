@@ -29,7 +29,7 @@ class connectedClient(threading.Thread):
         self.connection = connection
         self.ip, self.port = address
         self.id = id
-        self.username = None
+        self.username = ""
         while True:
             username = str(self.connection.recv(2048), "utf8")
             username = cliInterpretor(username)
@@ -64,13 +64,7 @@ class connectedClient(threading.Thread):
         while True:
             data = str(self.connection.recv(2048), "utf8")
             print(data)
-            data = json.loads(data)
-            try:
-                username = data["username"]
-                message = data["content"]
-            except KeyError:
-                continue # throw invalid packet away
-            if message[0] != "%":
+            if data[0] != "%":
                 continue # throw packet with invalid message away
             message = cliInterpretor(message)
             try:
@@ -80,10 +74,10 @@ class connectedClient(threading.Thread):
                     return
                 elif message[0] == "%send":
                     if message[1] == '*':
-                        data = {"username":username, "content":message[2]}
+                        data = {"username":self.username, "content":message[2]}
                         self.broadcast(data, False)
                     elif message[1] in getUsernames(True):
-                        data = {"username":username, "content":message[2]}
+                        data = {"username":self.username, "content":message[2]}
                         connDict[usernameToConnection(message[1])].send(data)
                     else:
                         continue # throw packet with invalid username away
