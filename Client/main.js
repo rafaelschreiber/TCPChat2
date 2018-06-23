@@ -1,18 +1,16 @@
 const {app, BrowserWindow, Menu} = require('electron');
 const shell = require('electron').shell;
 
-
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 
 function createWindow () {
     // Erstellen des Browser-Fensters.
-    win = new BrowserWindow({width: 1000, height: 600})
+    win = new BrowserWindow({width: 1000, height: 600, resizable: false});
 
     // und Laden der index.html der App.
-    win.loadFile('src/index.html')
+    win.loadFile('src/index.html');
 
     const template = [{
         label: 'Edit',
@@ -73,7 +71,7 @@ function createWindow () {
 // Diese Methode wird aufgerufen, wenn Electron mit der
 // Initialisierung fertig ist und Browserfenster erschaffen kann.
 // Einige APIs können nur nach dem Auftreten dieses Events genutzt werden.
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 // Verlassen, wenn alle Fenster geschlossen sind.
 app.on('window-all-closed', () => {
@@ -82,7 +80,9 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
-})
+});
+
+
 
 app.on('activate', () => {
     // Unter macOS ist es üblich ein neues Fenster der App zu erstellen, wenn
@@ -90,7 +90,7 @@ app.on('activate', () => {
     if (win === null) {
         createWindow()
     }
-})
+});
 
 // In dieser Datei können Sie den Rest des App-spezifischen
 // Hauptprozess-Codes einbinden. Sie können den Code auch

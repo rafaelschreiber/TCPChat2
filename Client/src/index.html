@@ -18,21 +18,23 @@
 <body>
 
 <div class="container">
-    <div class="row">
-        <input id="add_server_btn"
-               class="btn btn-success" type="button"
-               value="Add new server">
-    </div>
     <div id="userFromArea" class="row">
         <div class="col-md-12">
             <form id="userFrom">
+                <h3>TCP-Chat2 Login:</h3>
                 <div class="form-group">
-                    <h3>TCP-Chat2 Login:</h3>
                     <input id="username" type="text"
                            class="form-control" placeholder="Enter Username"/>
-                    <br/>
-                    <input type="submit" class="btn btn-success" value="Login"/>
                 </div>
+                <div class="form-group">
+                    <input id="servername" type="text"
+                           class="form-control" placeholder="Enter Servername"/>
+                </div>
+                <div class="form-group">
+                    <input id="port" type="number"
+                           class="form-control" placeholder="Enter Port"/>
+                </div>
+                <input type="submit" class="btn btn-success" value="Login"/>
             </form>
         </div>
     </div>
@@ -74,16 +76,20 @@
 
     var input;
     var user;
+    var port;
+    var servername;
 
 
 
     $('#userFrom').submit(function () {
         input = document.getElementById("username").value;
         user = input;
+        port = document.getElementById("port").value;
+        servername = document.getElementById("servername").value;
     });
 
     document.getElementById("userFrom").onsubmit = function(e) {
-        if(input) {
+        if(input && port && servername) {
             e.preventDefault();
             $userFormArea.hide();
             $messageArea.show();

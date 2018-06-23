@@ -3,11 +3,12 @@ const path = require('path');
 const BrowserWindow = electron.remote.BrowserWindow;
 
 
-const add_server_btn = document.getElementById("add_server_btn");
+online_users = [];
+
 
 function client_listener() {
     client.setEncoding('utf8');
-    client.connect(2018, "localhost", function () {
+    client.connect(port, servername, function () {
         data_traffic();
     });
 }
@@ -31,19 +32,26 @@ function data_traffic() {
         console.log(data.toString());
         var message = JSON.parse(data);
         console.log(message.username + " : " + message.content);
+        if(message.content === '%isonline'){
+            $chat.append('<div class="well" style="color: green">'+ message.username + 'is now online </div>');
+        }
         $chat.append('<div class="well"><strong>'+
             message.username +'</strong> : '+
             message.content+'</div>');
-    })
-    //get all online users
+    });
+
+    //exit from server
+    client.on('end', ()=>{
+        client.write("%exit");
+    });
+
+    //Online Users
+
 
 }
 
+function shutdown_client(){
+    client.write("%exit");
+    client.end();
+}
 
-
-add_server_btn.addEventListener('click', function (event) {
-    const modalPath = path.join('/',__dirname, 'add.html');
-    let win = new BrowserWindow({width: 300, height:400, resizable: false});
-    win.loadFile(modalPath);
-    win.show();
-});
