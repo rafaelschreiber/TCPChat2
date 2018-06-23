@@ -40,7 +40,7 @@ class connectedClient(threading.Thread):
             username = cliInterpretor(username)
             if len(username) == 2:
                 if username[0] == "%setusername":
-                    if username[1] not in getUsernames(connected=True) or username[1] != '*' or username[1] != "server":
+                    if username[1] not in getUsernames(connected=True) and username[1] != "*" and username[1] != "server":
                         self.username = username[1]
                         break
                     else:
@@ -94,6 +94,8 @@ class connectedClient(threading.Thread):
                         connDict[usernameToConnection(message[1])].send(self.username, message[2])
                     else:
                         continue # throw packet with invalid username away
+                elif message[0] == "%getusers":
+                    self.sendRaw({"username":"server", "content":"%userlist", "userlist":getUsernames(connected=True)})
             except IndexError:
                 continue # throw packet packet away when server cannot process it
 
@@ -110,6 +112,16 @@ class connectedClient(threading.Thread):
 
     def send(self, username, content):
         data = {"username":username, "content":content}
+        data = json.dumps(data, ensure_ascii=False)
+        if debug:
+            try:
+                print("debug: Outgoing: Sending " + self.username + " " + data)
+            except UnicodeEncodeError:
+                print("debug: Outgoing: Error while decoding outgoing message") # just for debugging
+        self.connection.send(bytes(data, "utf8"))
+
+
+    def sendRaw(self, data):
         data = json.dumps(data, ensure_ascii=False)
         if debug:
             try:
