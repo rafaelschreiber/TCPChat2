@@ -14,6 +14,7 @@ from functions import *
 import socket
 import threading
 import json
+import os
 
 connDict = { } # This dictionary contains all threaded connections
 debug = False # indicator variable for debugging
@@ -265,5 +266,7 @@ while True:
         ls(command[1:])
     elif command[0] == "debug":
         changeDebug(command[1:])
+    elif command[0] == "clear" or command[0] == "cls":
+        os.system("clear")
     else:
         print("Command not found")
