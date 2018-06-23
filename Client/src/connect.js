@@ -27,7 +27,8 @@ function data_traffic() {
     });
 
     //receive message
-    client.on('new message', function (data) {
+    client.on('data', function (data) {
+        console.log(data.toString);
         $chat.append('<div class="well">'+
             '<strong>'+ data.username +'</strong>'+'<div>'+
             data.content+'</div>');
