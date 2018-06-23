@@ -5,25 +5,19 @@ const BrowserWindow = electron.remote.BrowserWindow;
 
 const add_server_btn = document.getElementById("add_server_btn");
 
-let username;
-
 function client_listener() {
     client.setEncoding('utf8');
     client.connect(2018, "localhost", function () {
-        send_username();
+        data_traffic();
     });
 }
 
-function send_username() {
+function data_traffic() {
+    //send server username
     var name = "%setusername " + input;
-    //var buffer_name = Buffer.from(name, 'utf8');
     client.write(name);
-    send_data();
-    receive_data();
 
-}
-
-function send_data() {
+    //send message
     $('#messageFrom').submit(function (event) {
         event.preventDefault();
         input = document.getElementById("message").value;
@@ -31,13 +25,25 @@ function send_data() {
         client.write(input);
         $message.val('');
     });
+
+    //receive message
+    client.on('new message', function (data) {
+        $chat.append('<div class="well">'+
+            '<strong>'+ data.username +'</strong>'+'<div>'+
+            data.content+'</div>');
+    });
+
+    //get all online users
+    client.on('get users', function (data) {
+        for(i =0; data.length; i++){
+            html += '<li class="list-group-item">'+data[i]+'</li>';
+        }
+    });
+    $users.html(html);
+
 }
 
-function receive_data() {
-    client.on('data', function (data) {
-        console.log("test");
-    });
-}
+
 
 add_server_btn.addEventListener('click', function (event) {
     const modalPath = path.join('/',__dirname, 'add.html');
