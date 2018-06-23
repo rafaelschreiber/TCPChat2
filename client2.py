@@ -55,9 +55,7 @@ def recvMessages():
 
 
 def sendMessage(message):
-    data = {"username": connectionInfo[2], "content": message}
-    data = json.dumps(data)
-    client_socket.send(bytes(data, "utf8"))
+    client_socket.send(bytes(message, "utf8"))
 
 
 acceptConnectionsThread = threading.Thread(target=recvMessages)
