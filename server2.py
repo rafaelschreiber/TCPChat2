@@ -210,7 +210,6 @@ def ls(args):
     elif len(args) == 1:
         try:
             print("ID:         " + str(connDict[args[0]].id))
-            print("Connection: " + str(connDict[args[0]].connection))
             print("IP-Address: " + str(connDict[args[0]].ip))
             print("Port:       " + str(connDict[args[0]].port))
             print("Username:   " + str(connDict[args[0]].username))
@@ -252,21 +251,32 @@ acceptConnectionsThread = threading.Thread(target=acceptConnections)
 acceptConnectionsThread.daemon = True
 acceptConnectionsThread.start()
 
-print("Welcome to TCPChat2 server console!")
-while True:
-    print()
-    command = str(input("$ "))
-    command = cliInterpretor(command)
-    if len(command) == 0:
-        print("Command not found")
-        continue
-    if command[0] == "exit":
-        shutdown(command[1:])
-    elif command[0] == "ls":
-        ls(command[1:])
-    elif command[0] == "debug":
-        changeDebug(command[1:])
-    elif command[0] == "clear" or command[0] == "cls":
-        os.system("clear")
-    else:
-        print("Command not found")
+
+def main():
+    print("Welcome to TCPChat2 server console!")
+    while True:
+        print()
+        command = str(input("$ "))
+        command = cliInterpretor(command)
+        if len(command) == 0:
+            print("Command not found")
+            continue
+        if command[0] == "exit":
+            shutdown(command[1:])
+        elif command[0] == "ls":
+            ls(command[1:])
+        elif command[0] == "debug":
+            changeDebug(command[1:])
+        elif command[0] == "clear" or command[0] == "cls":
+            os.system("clear")
+        else:
+            print("Command not found")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        shutdown()
+    except EOFError:
+        shutdown()
