@@ -16,3 +16,7 @@ body{
     height: 450px;
     overflow: auto;
 }
+
+li:hover{
+    color: lightgreen;
+}

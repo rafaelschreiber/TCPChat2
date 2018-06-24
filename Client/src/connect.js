@@ -4,6 +4,7 @@ const BrowserWindow = electron.remote.BrowserWindow;
 
 
 online_users = [];
+var send_to = "*";
 
 
 function client_listener() {
@@ -22,7 +23,7 @@ function data_traffic() {
     $('#messageFrom').submit(function (event) {
         event.preventDefault();
         input = document.getElementById("message").value;
-        input = '%send * ' + '"'+input + '"';
+        input = '%send '+ send_to + ' "'+input + '"';
         client.write(input);
         $message.val('');
     });
@@ -55,7 +56,10 @@ function data_traffic() {
             $messageArea.hide();
 
         }else if(message.username === 'server' && message.content === '%userlist'){
+
             get_online_users(message.userlist);
+            create_single_chats(message.userlist);
+
         } else {
 
             $chat.append('<div class="well"><strong>'+
@@ -75,9 +79,25 @@ function data_traffic() {
 function get_online_users(data) {
     var html = '';
     for(i = 0; i < data.length; i++){
-        html += '<li class="list-group-item">'+data[i]+'</li>'
+        console.log(name);
+        html += '<li class="list-group-item" role="presentation">'+data[i]+'</li>'
     }
     $users.html(html);
+}
+
+function create_single_chats(data) {
+    var html = '';
+    for(i = 0; i < data.length; i++){
+        html += '<div class="chat" id="'+data[i]+'" style="display: none; width:615px;' +
+            'height: 450px;"></div>';
+    }
+    $all_chats.html(html);
+}
+
+function start_single_chat(user) {
+    $(user).show();
+    $chat.hide();
+    send_to = user;
 }
 
 function scroll_down() {
