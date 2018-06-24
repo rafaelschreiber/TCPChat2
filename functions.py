@@ -27,3 +27,25 @@ def cliInterpretor(string):
     if currentWord != '':
         keywords.append(currentWord)
     return keywords
+
+
+def clearSpaces(string):
+    leftClearedString = ""
+    isInString = False
+    for char in string:
+        if isInString:
+            leftClearedString += char
+        else:
+            if char != " ":
+                isInString = True
+                leftClearedString += char
+    isInString = False
+    clearedString = ""
+    for char in leftClearedString[::-1]:
+        if isInString:
+            clearedString += char
+        else:
+            if char != " ":
+                isInString = True
+                clearedString += char
+    return clearedString[::-1]

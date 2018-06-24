@@ -108,6 +108,7 @@ class connectedClient(threading.Thread):
             if message[0] != "%":
                 continue # throw packet with invalid message away
             message = cliInterpretor(message)
+
             try:
                 if message[0] == "%exit":
                     self.closeConnectionByClient()
@@ -115,7 +116,10 @@ class connectedClient(threading.Thread):
                     self.broadcast(self.username, "%isoffline", metoo=False)
                     return
                 elif message[0] == "%send":
-                    if message[1] == '*':
+                    message[2] = clearSpaces(message[2])
+                    if message[2] == "":
+                        continue # throw empty message away
+                    elif message[1] == '*':
                         self.broadcast(self.username, message[2])
                     elif message[1] in getUsernames(True):
                         connDict[usernameToConnection(message[1])].send(self.username, message[2])
