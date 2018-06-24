@@ -19,10 +19,36 @@ import os
 connDict = { } # This dictionary contains all threaded connections
 debug = False # indicator variable for debugging
 
+
+try:
+    print("On which IP-Address and or Domain the server should listen? (Default: All)")
+    serveraddress = str(input(">>> "))
+    if serveraddress == "":
+        serveraddress = "0.0.0.0"
+    print("On which Port the server should be listen? (Default: 2018)")
+    while True:
+        serverport = str(input(">>> "))
+        if serverport == "":
+            serverport = 2018
+            break
+        try:
+            serverport = int(serverport)
+            break
+        except ValueError:
+            print("The Port must be a number\n")
+            continue
+except KeyboardInterrupt:
+    print()
+    exit(0)
+except EOFError:
+    print()
+    exit(0)
+
+
 # creating main socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socket.bind(("0.0.0.0", 2018)) # 0.0.0.0 scans for every domain and/or address
+server_socket.bind((serveraddress, serverport))
 server_socket.listen(5)
 
 
