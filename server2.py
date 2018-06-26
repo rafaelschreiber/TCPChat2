@@ -94,7 +94,14 @@ class connectedClient(threading.Thread):
 
     def run(self):
         while True:
-            message = str(self.connection.recv(2048), "utf8")
+            try:
+                message = str(self.connection.recv(2048), "utf8")
+            except ConnectionResetError:
+                self.closeConnectionByClient()
+                print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(
+                    self.id) + " disconnected")
+                self.broadcast(self.username, "%isoffline", metoo=False)
+                return
             if not message: # happens if socket is broken
                 self.closeConnectionByClient()
                 print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
