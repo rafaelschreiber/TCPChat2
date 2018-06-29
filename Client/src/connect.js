@@ -7,6 +7,7 @@ online_users = [];
 var send_to = "*";
 
 
+
 function client_listener() {
     client.setEncoding('utf8');
     client.connect(port, servername, function () {
@@ -79,8 +80,7 @@ function data_traffic() {
 function get_online_users(data) {
     var html = '';
     for(i = 0; i < data.length; i++){
-        console.log(name);
-        html += '<li class="list-group-item" role="presentation">'+data[i]+'</li>'
+        html += '<li class="list-group-item" role="presentation" id="'+data[i]+'">'+data[i]+'</li>'
     }
     $users.html(html);
 }

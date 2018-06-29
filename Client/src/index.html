@@ -101,6 +101,15 @@
         }
         $username.val('');
     };
+
+    $( "ul" ).click(function( event ) {
+        var target = $( event.target );
+        if ( target.is( "li" ) ) {
+            target.click(function () {
+                start_single_chat(this.id);
+            });
+        }
+    });
 </script>
 <script src="connect.js"></script>
 </body>

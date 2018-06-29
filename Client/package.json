@@ -1,5 +1,6 @@
 {
   "name": "tcp-client",
+  "productName": "TCP-Client",
   "version": "1.0.0",
   "description": "tcp chat client",
   "main": "main.js",
@@ -21,6 +22,7 @@
   },
   "homepage": "https://github.com/rafaelschreiber/TCPChat2#readme",
   "devDependencies": {
-    "electron": "2.0.2"
+    "electron": "2.0.2",
+    "electron-packager": "^12.1.0"
   }
 }
