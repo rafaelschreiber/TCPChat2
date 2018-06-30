@@ -14,7 +14,6 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>if (window.module) module = window.module;</script>
 </head>
-
 <body>
 
 <div class="container">
@@ -64,7 +63,7 @@
 </div>
 <script type="text/javascript">
     let net = require('net');
-    let fs = require('fs');
+    let Server_Config = require('./message_log.js');
     let client = new net.Socket();
 
     var $message = $('#message');
@@ -76,11 +75,25 @@
     var $username = $('#username');
     var $all_chats = $('#all_chats');
 
-    var input;
-    var user;
-    var port;
-    var servername;
+    const server_config = new Server_Config({
+        configName: 'user-preferences',
+        defaults: {
+            server: {name: '', port: '', user_name: ''}
+        }
+    });
 
+    let input;
+
+    let {servername, port, user} = server_config.get('server');
+
+    console.log(server_config);
+
+    if(servername !== '' && port !== '' && user !== '') {
+        document.getElementById('servername').value = servername;
+        document.getElementById('port').value = port;
+        document.getElementById('username').value = user;
+        console.log(server_config);
+    }
 
 
     $('#userFrom').submit(function () {
@@ -88,6 +101,8 @@
         user = input;
         port = document.getElementById("port").value;
         servername = document.getElementById("servername").value;
+        server_config.set('server', {servername, port, user});
+        console.log(server_config);
     });
 
     document.getElementById("userFrom").onsubmit = function(e) {
@@ -106,7 +121,8 @@
         var target = $( event.target );
         if ( target.is( "li" ) ) {
             target.click(function () {
-                start_single_chat(this.id);
+                alert('Please by Premium to use this feature');
+               //start_single_chat(this.id);
             });
         }
     });

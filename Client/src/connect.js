@@ -1,12 +1,4 @@
-const electron = require('electron');
-const path = require('path');
-const BrowserWindow = electron.remote.BrowserWindow;
-
-
-online_users = [];
-var send_to = "*";
-
-
+let send_to = "*";
 
 function client_listener() {
     client.setEncoding('utf8');
@@ -16,10 +8,12 @@ function client_listener() {
 }
 
 function data_traffic() {
-    //send server username
+
+    //send username to server
     var name = "%setusername " + input;
     client.write(name);
     client.write("%getusers");
+
     //send message
     $('#messageFrom').submit(function (event) {
         event.preventDefault();
@@ -67,11 +61,12 @@ function data_traffic() {
                 message.username +'</strong> : '+
                 message.content+'</div>');
             scroll_down();
+            message_log(servername, message)
         }
     });
 
     //exit from server
-    client.on('end', ()=>{
+    client.on('end', () => {
         client.write("%exit");
     });
 
@@ -88,7 +83,7 @@ function get_online_users(data) {
 function create_single_chats(data) {
     var html = '';
     for(i = 0; i < data.length; i++){
-        html += '<div class="chat" id="'+data[i]+'" style="display: none; width:615px;' +
+        html += '<div class="chat" id="'+data[i]+'" style="display: none; width:615px; background-color: red;' +
             'height: 450px;"></div>';
     }
     $all_chats.html(html);
