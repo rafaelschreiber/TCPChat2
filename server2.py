@@ -324,6 +324,8 @@ def main():
             changeDebug(command[1:])
         elif command[0] == "clear" or command[0] == "cls":
             os.system("clear")
+        elif command[0] == "kick":
+            kick(command[1:])
         else:
             print("Command not found")
 
