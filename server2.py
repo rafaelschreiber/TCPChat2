@@ -5,8 +5,8 @@
     Created:    21-06-2018
 
     This is TCPChat2 Server. This programm is distributed as closed source. This program handles all
-    ingoing connections and manage them. It also offers a feature-rich server console, where the server
-    administrator can manage everything if he wants per hand.
+    ingoing connections and manages them. It also offers a feature-rich server console, where the server
+    administrator can manages everything if he wants per hand.
 
 """
 
@@ -281,6 +281,24 @@ def changeDebug(args):
             print("debug: Unknown argument \'" + args[0] + "\'")
     else:
         print("debug: Requires exactly 1 argument")
+
+
+def kick(args):
+    if len(args) == 0:
+        print("kick: Requires min. 1 argument")
+    elif len(args) == 1 or len(args) == 2:
+        if args[0] in connDict:
+            if connDict[args[0]].isonline is True:
+                if len(args) == 2:
+                    connDict[args[0]].closeConnectionByServer(args[2])
+                else:
+                    connDict[args[0]].closeConnectionByServer()
+            else:
+                print("kick: Connection \'" + args[0] + "\' is already offline")
+        else:
+            print("kick: Connection \'" + args[0] + "\' doesn't exist")
+    else:
+        print("kick: Requires max. 2 arguments")
 
 
 # starting thread for accept connections
