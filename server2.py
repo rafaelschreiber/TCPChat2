@@ -102,6 +102,11 @@ class connectedClient(threading.Thread):
                     self.id) + " disconnected")
                 self.broadcast(self.username, "%isoffline", metoo=False)
                 return
+            except OSError:
+                print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(
+                    self.id) + " disconnected")
+                self.broadcast(self.username, "%isoffline", metoo=False)
+                return
             if not message: # happens if socket is broken
                 self.closeConnectionByClient()
                 print(self.username + " on " + self.ip + ":" + str(self.port) + " with PID " + str(self.id) + " disconnected")
@@ -290,7 +295,7 @@ def kick(args):
         if args[0] in connDict:
             if connDict[args[0]].isonline is True:
                 if len(args) == 2:
-                    connDict[args[0]].closeConnectionByServer(args[2])
+                    connDict[args[0]].closeConnectionByServer(args[1])
                 else:
                     connDict[args[0]].closeConnectionByServer()
             else:
