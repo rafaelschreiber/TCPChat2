@@ -114,9 +114,9 @@ class connectedClient(threading.Thread):
                 return
             if debug:
                 try:
-                    print("debug: Incoming: " + message) # just for debugging
+                    print("debug: Incoming from " + self.username + ": " + message) # just for debugging
                 except UnicodeEncodeError:
-                    print("debug: Incoming: Error while decoding ingoing message")
+                    print("debug: Incoming from " + self.username + ": Error while decoding ingoing message")
             if message[0] != "%":
                 continue # throw packet with invalid message away
             message = cliInterpretor(message)
