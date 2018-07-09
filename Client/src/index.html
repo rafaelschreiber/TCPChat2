@@ -5,7 +5,7 @@
     <meta name="author" content="Simon">
     <title>TCP-Chat</title>
 
-   <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script>
@@ -14,9 +14,9 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>if (window.module) module = window.module;</script>
 </head>
-<body>
-
+<body id="background">
 <div class="container">
+    <input id="enable_dark_mode" type="button" class="btn" value="Enable Dark Mode">
     <div id="userFromArea" class="row">
         <div class="col-md-12">
             <form id="userFrom">
@@ -56,6 +56,7 @@
                            class="form-control" autocomplete="off"/>
                     <br/>
                     <input type="submit" class="btn btn-success" value="Send Message"/>
+                    <span class="fui-search"></span>
                 </div>
             </form>
         </div>
@@ -65,47 +66,53 @@
     let net = require('net');
     let Server_Config = require('./message_log.js');
     let client = new net.Socket();
+    const fs = require('fs'),
+        xml2js = require('xml2js');
 
-    var $message = $('#message');
-    var $chat = $('#chat');
-    var $messageArea = $('#messageArea');
-    var $userFormArea = $('#userFromArea');
-    var $userForm = $('#userFrom');
-    var $users = $('#users');
-    var $username = $('#username');
-    var $all_chats = $('#all_chats');
+    let $message = $('#message');
+    let $chat = $('#chat');
+    let $messageArea = $('#messageArea');
+    let $userFormArea = $('#userFromArea');
+    let $userForm = $('#userFrom');
+    let $users = $('#users');
+    let $username = $('#username');
+    let $all_chats = $('#all_chats');
 
     const server_config = new Server_Config({
         configName: 'user-preferences',
         defaults: {
-            server: {name: '', port: '', user_name: ''}
+            server: {name: '', port: '', user_name: ''},
+            darkMode: {on: false}
         }
     });
 
     let input;
 
     let {servername, port, user} = server_config.get('server');
-
-    console.log(server_config);
+    let darkmode = server_config.get('darkMode');
 
     if(servername !== '' && port !== '' && user !== '') {
         document.getElementById('servername').value = servername;
         document.getElementById('port').value = port;
         document.getElementById('username').value = user;
-        console.log(server_config);
     }
 
+    document.getElementById('enable_dark_mode').onclick = function( e ){
+        e.preventDefault();
+        darkmode = darkmode === false;
+        server_config.set('darkMode',{darkmode});
 
-    $('#userFrom').submit(function () {
+        console.log(server_config);
+    };
+
+    $('#userFrom').submit(function ( e ) {
         input = document.getElementById("username").value;
         user = input;
         port = document.getElementById("port").value;
         servername = document.getElementById("servername").value;
         server_config.set('server', {servername, port, user});
         console.log(server_config);
-    });
 
-    document.getElementById("userFrom").onsubmit = function(e) {
         if(input && port && servername) {
             e.preventDefault();
             $userFormArea.hide();
@@ -115,17 +122,19 @@
                                //basically the whole program
         }
         $username.val('');
-    };
+    });
 
     $( "ul" ).click(function( event ) {
-        var target = $( event.target );
+        let target = $( event.target );
         if ( target.is( "li" ) ) {
             target.click(function () {
-                alert('Please by Premium to use this feature');
+                alert('Single Chat are not NOW available.');
                //start_single_chat(this.id);
             });
         }
     });
+
+
 </script>
 <script src="connect.js"></script>
 </body>

@@ -2,7 +2,6 @@ const electron = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-
 class Server_Config {
     constructor(opts) {
         const user_data_path = (electron.app || electron.remote.app).getPath('userData');
@@ -22,7 +21,6 @@ class Server_Config {
         fs.writeFileSync(this.path, JSON.stringify(this.data));
     }
 }
-
 function parseDataFile(file_path, defaults) {
     try{
         return JSON.parse(fs.readFileSync(file_path));

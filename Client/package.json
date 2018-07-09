@@ -15,7 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "*",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "xml2js": "^0.4.19"
   },
   "bugs": {
     "url": "https://github.com/rafaelschreiber/TCPChat2/issues"

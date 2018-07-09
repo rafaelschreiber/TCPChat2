@@ -36,32 +36,34 @@ function data_traffic() {
             client.write("%getusers");
 
         } else if(message.content === '%isoffline') {
-
             $chat.append('<div class="well" style="color: red">'+ message.username + ' is now offline </div>');
             scroll_down();
             client.write("%getusers");
 
         } else if (message.content === '%exit' && message.username === 'server'){
 
-            $chat.append('<div class="well" style="color: red"><strong>Your are kick from the Server</strong></div>')
+            $chat.append('<div class="well" style="color: red"><strong>Your are kick from the Server</strong></div>');
             scroll_down();
             setTimeout(function () {
-            }, 999999999);
+            }, 9999);
             $userFormArea.show();
             $messageArea.hide();
 
         }else if(message.username === 'server' && message.content === '%userlist'){
 
             get_online_users(message.userlist);
-            create_single_chats(message.userlist);
 
+        } else if(message.username === 'server' && message.content === '%usernametaken'){
+            $chat.append('<div class="well" style="color: red"><strong>This username is already taken</strong></div>');
+            setTimeout(function () {
+            }, 9999);
+            $userFormArea.show();
+            $messageArea.hide();
         } else {
-
             $chat.append('<div class="well"><strong>'+
                 message.username +'</strong> : '+
                 message.content+'</div>');
             scroll_down();
-            message_log(servername, message)
         }
     });
 
@@ -103,4 +105,5 @@ function shutdown_client(){
     client.write("%exit");
     client.end();
 }
+
 
