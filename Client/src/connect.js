@@ -1,4 +1,12 @@
+const path = require('path');
+
 let send_to = "*";
+
+const notification = {
+    title: 'TCP-Chat2.0',
+    body: 'You got a new message',
+    icon: path.join(__dirname, '../assets/image/programming.png')
+};
 
 function client_listener() {
     client.setEncoding('utf8');
@@ -45,7 +53,7 @@ function data_traffic() {
             $chat.append('<div class="well" style="color: red"><strong>Your are kick from the Server</strong></div>');
             scroll_down();
             setTimeout(function () {
-            }, 9999);
+            }, 999999);
             $userFormArea.show();
             $messageArea.hide();
 
@@ -56,10 +64,14 @@ function data_traffic() {
         } else if(message.username === 'server' && message.content === '%usernametaken'){
             $chat.append('<div class="well" style="color: red"><strong>This username is already taken</strong></div>');
             setTimeout(function () {
-            }, 9999);
+            }, 999999);
             $userFormArea.show();
             $messageArea.hide();
         } else {
+            if(window.isMinimized){
+                console.log('is minimized');
+                get_notification();
+            }
             $chat.append('<div class="well"><strong>'+
                 message.username +'</strong> : '+
                 message.content+'</div>');
@@ -106,4 +118,11 @@ function shutdown_client(){
     client.end();
 }
 
+function get_notification() {
+    const new_notification =
+        new window.Notification(notification.title, notification);
+    new_notification.onclick = () => {
+        console.log('Notification clicked');
+    }
+}
 
