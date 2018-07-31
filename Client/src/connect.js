@@ -2,7 +2,7 @@ const path = require('path');
 
 let send_to = "*";
 
-const notification = {
+let notification = {
     title: 'TCP-Chat2.0',
     body: 'You got a new message',
     icon: path.join(__dirname, '../assets/image/programming.png')
@@ -68,14 +68,18 @@ function data_traffic() {
             $userFormArea.show();
             $messageArea.hide();
         } else {
-            if(window.isMinimized){
-                console.log('is minimized');
-                get_notification();
-            }
             $chat.append('<div class="well"><strong>'+
                 message.username +'</strong> : '+
                 message.content+'</div>');
             scroll_down();
+
+            if(document.hidden){
+                console.log('is minimized');
+                notification.title = message.username;
+                notification.body = message.content;
+                get_notification();
+
+            }
         }
     });
 
