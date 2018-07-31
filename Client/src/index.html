@@ -16,7 +16,7 @@
 </head>
 <body id="background">
 <div class="container">
-    <input id="enable_dark_mode" type="button" class="btn" value="Enable Dark Mode">
+    <input id="enable_dark_mode" type="button" class="btn" value="Enable Dark Mode" style="visibility: hidden">
     <div id="userFromArea" class="row">
         <div class="col-md-12">
             <form id="userFrom">
@@ -97,7 +97,7 @@
         document.getElementById('username').value = user;
     }
 
-    document.getElementById('enable_dark_mode').onclick = function( e ){
+   document.getElementById('enable_dark_mode').onclick = function( e ){
         e.preventDefault();
         darkmode = darkmode === false;
         server_config.set('darkMode',{darkmode});
