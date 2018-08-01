@@ -21,8 +21,9 @@ class Server_Config {
         fs.writeFileSync(this.path, JSON.stringify(this.data));
     }
 }
+
 function parseDataFile(file_path, defaults) {
-    try{
+    try {
         return JSON.parse(fs.readFileSync(file_path));
     } catch (error) {
         return defaults;

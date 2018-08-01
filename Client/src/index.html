@@ -7,7 +7,10 @@
 
     <link rel="stylesheet" href="../assets/css/index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script>if (typeof module === 'object') {
+        window.module = module;
+        module = undefined;
+    }</script>
     <script>
         require('../render.js');
     </script>
@@ -30,8 +33,8 @@
                            class="form-control" placeholder="Enter Port"/>
                 </div>
                 <div class="form-group">
-                <input id="username" type="text"
-                       class="form-control" placeholder="Enter Username"/>
+                    <input id="username" type="text"
+                           class="form-control" placeholder="Enter Username"/>
                 </div>
                 <input type="submit" class="btn btn-success" value="Login"/>
             </form>
@@ -91,21 +94,21 @@
     let {servername, port, user} = server_config.get('server');
     let darkmode = server_config.get('darkMode');
 
-    if(servername !== '' && port !== '' && user !== '') {
+    if (servername !== '' && port !== '' && user !== '') {
         document.getElementById('servername').value = servername;
         document.getElementById('port').value = port;
         document.getElementById('username').value = user;
     }
 
-   document.getElementById('enable_dark_mode').onclick = function( e ){
+    document.getElementById('enable_dark_mode').onclick = function (e) {
         e.preventDefault();
         darkmode = darkmode === false;
-        server_config.set('darkMode',{darkmode});
+        server_config.set('darkMode', {darkmode});
 
         console.log(server_config);
     };
 
-    $('#userFrom').submit(function ( e ) {
+    $('#userFrom').submit(function (e) {
         input = document.getElementById("username").value;
         user = input;
         port = document.getElementById("port").value;
@@ -113,7 +116,7 @@
         server_config.set('server', {servername, port, user});
         console.log(server_config);
 
-        if(input && port && servername) {
+        if (input && port && servername) {
             e.preventDefault();
             $userFormArea.hide();
             $messageArea.show();
@@ -124,12 +127,12 @@
         $username.val('');
     });
 
-    $( "ul" ).click(function( event ) {
-        let target = $( event.target );
-        if ( target.is( "li" ) ) {
+    $("ul").click(function (event) {
+        let target = $(event.target);
+        if (target.is("li")) {
             target.click(function () {
                 alert('Single Chat are not NOW available.');
-               //start_single_chat(this.id);
+                //start_single_chat(this.id);
             });
         }
     });
