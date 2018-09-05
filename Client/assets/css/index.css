@@ -21,3 +21,8 @@ li:hover{
     color: lightgreen;
     cursor: pointer;
 }
+
+
+#messageFrom{
+    position: relative;
+}

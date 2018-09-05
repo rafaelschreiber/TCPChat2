@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="author" content="Simon">
-    <title>TCP-Chat</title>
+<meta charset="UTF-8">
+<meta name="author" content="Simon">
+<title>TCP-Chat</title>
 
-    <link rel="stylesheet" href="../assets/css/index.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script>if (typeof module === 'object') {
+<link rel="stylesheet" href="../assets/css/index.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script>
+    if (typeof module === 'object') {
         window.module = module;
         module = undefined;
-    }</script>
-    <script>
-        require('../render.js');
-    </script>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script>if (window.module) module = window.module;</script>
+    }
+</script>
+<script>
+    require('../render.js');
+</script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>if (window.module) module = window.module;</script>
 </head>
-<body id="background">
+<body id="background" class="body-background">
 <div class="container">
     <input id="enable_dark_mode" type="button" class="btn" value="Enable Dark Mode" style="visibility: hidden">
     <div id="userFromArea" class="row">
@@ -42,7 +43,7 @@
     </div>
 
     <div id="messageArea" class="row">
-        <div class="col-md-4">
+        <div class="col-sm-4">
             <div class="well">
                 <h3>Online Users</h3>
                 <ul class="list-group" id="users"></ul>
@@ -55,11 +56,15 @@
             </div>
             <form id="messageFrom">
                 <div class="form-group">
-                    <input id="message" type="text" placeholder="Enter Message"
-                           class="form-control" autocomplete="off"/>
-                    <br/>
-                    <input type="submit" class="btn btn-success" value="Send Message"/>
-                    <span class="fui-search"></span>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input id="message" type="text" placeholder="Enter Message"
+                                   class="form-control" autocomplete="off"/>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" class="btn btn-success" value="Send Message"/>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -69,8 +74,6 @@
     let net = require('net');
     let Server_Config = require('./message_log.js');
     let client = new net.Socket();
-    const fs = require('fs'),
-        xml2js = require('xml2js');
 
     let $message = $('#message');
     let $chat = $('#chat');

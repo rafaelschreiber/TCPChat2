@@ -10,9 +10,18 @@ let notification = {
 
 function client_listener() {
     client.setEncoding('utf8');
+    client.on('error', (e) => {
+        if(e.code === 'ECONNREFUSED'){
+            alert('It looks like you are not connected to the ' +
+                'server. Please check if you typed the right name')
+        }
+
+    });
     client.connect(port, servername, function () {
         data_traffic();
     });
+
+
 
 }
 
@@ -131,8 +140,11 @@ function shutdown_client() {
 function get_notification() {
     const new_notification =
         new window.Notification(notification.title, notification);
+
     new_notification.onclick = () => {
         console.log('Notification clicked');
+
+
     }
 }
 
