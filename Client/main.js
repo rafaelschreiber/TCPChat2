@@ -21,7 +21,7 @@ function createWindow () {
                 }
             })(),
             click: function () {
-                shell.openExternal('https://2bhif.at');
+                shell.openExternal('https://3bhif.at');
             }
 
         },{

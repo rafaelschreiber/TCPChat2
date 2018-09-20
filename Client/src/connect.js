@@ -11,7 +11,7 @@ let notification = {
 function client_listener() {
     client.setEncoding('utf8');
     client.on('error', (e) => {
-        if(e.code === 'ECONNREFUSED'){
+        if(e.code === 'ECONNREFUSED') {
             alert('It looks like you are not connected to the ' +
                 'server. Please check if you typed the right name')
         }
