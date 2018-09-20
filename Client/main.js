@@ -4,7 +4,7 @@ const shell = require('electron').shell;
 let win;
 
 function createWindow () {
-    win = new BrowserWindow({width: 1000,height: 650,resizable: true});
+    win = new BrowserWindow({width: 1000,height: 650,resizable: false});
 
     win.loadFile('src/index.html');
 
