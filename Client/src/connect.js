@@ -28,7 +28,7 @@ function client_listener() {
 function data_traffic() {
 
     //send username to server
-    var name = "%setusername " + input;
+    let name = "%setusername " + input;
     client.write(name);
     client.write("%getusers");
 
@@ -101,6 +101,8 @@ function data_traffic() {
     //exit from server
     client.on('end', () => {
         client.write("%exit");
+        client.end();
+        client.destroy();
     });
 
 }
@@ -114,7 +116,7 @@ function get_online_users(data) {
 }
 
 function create_single_chats(data) {
-    var html = '';
+    let html = '';
     for (i = 0; i < data.length; i++) {
         html += '<div class="chat" id="' + data[i] + '" style="display: none; width:615px; background-color: red;' +
             'height: 450px;"></div>';
@@ -132,10 +134,6 @@ function scroll_down() {
     document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
 }
 
-function shutdown_client() {
-    client.write("%exit");
-    client.end();
-}
 
 function get_notification() {
     const new_notification =

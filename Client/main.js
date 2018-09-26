@@ -45,6 +45,7 @@ function createWindow () {
             click: (items, focusedWindow) => {
                 if(focusedWindow){
                     focusedWindow.toggleDevTools();
+                    console.log('Test123');
                 }
             }
         }]
