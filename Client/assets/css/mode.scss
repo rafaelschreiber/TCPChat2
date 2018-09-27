@@ -1,6 +1,7 @@
 :root {
     --dark-color: #111;
     --light-color: #eee;
+    --grey-color: 696969;
 }
 
 body.dark-mode {
@@ -15,6 +16,11 @@ body.dark-mode {
     button {
         background-color: var(--light-color);
         color: var(--dark-color);
+    }
+
+    input {
+        background: var(--grey-color);
+        border-color: var(--dark-color);
     }
 }
 
@@ -32,3 +38,4 @@ body.light-mode {
         color: var(--dark-color);
     }
 }
+

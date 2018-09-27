@@ -4,9 +4,9 @@ const shell = require('electron').shell;
 let win;
 
 function createWindow () {
-    win = new BrowserWindow({width: 1000,height: 650,resizable: false});
+    win = new BrowserWindow({width: 1000,height: 650,resizable: true});
 
-    win.loadFile('src/index.html');
+    win.loadFile('src/login.html');
 
     const template = [{
         label: 'Edit',
@@ -45,7 +45,6 @@ function createWindow () {
             click: (items, focusedWindow) => {
                 if(focusedWindow){
                     focusedWindow.toggleDevTools();
-                    console.log('Test123');
                 }
             }
         }]

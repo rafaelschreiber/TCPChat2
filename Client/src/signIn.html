@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TCP-Chat Sign In</title>
+    <link rel="stylesheet" href="../assets/css/login.css">
+</head>
+<body>
+<div class="box">
+    <h2>TCP-Chat2 Sign In</h2>
+    <form>
+        <div class="inputBox">
+            <input id="email" type="email" required/>
+            <label for="email" id="emailLabel">E-Mail</label>
+        </div>
+
+        <div class="inputBox">
+            <input id="username" type="text" required/>
+            <label for="username" id="usernameLabel">Username</label>
+        </div>
+
+        <div class="inputBox">
+            <input id="password" type="password" required/>
+            <label for="password" id="passwordLabel">Password</label>
+        </div>
+
+        <div class="inputBox">
+            <input id="confirmPassword" type="password" required/>
+            <label for="confirmPassword" id="confirmPasswordLabel">Confirm Password</label>
+        </div>
+
+        <input type="submit" class="btn" value="Submit" onclick="goTo('login.html')">
+    </form>
+</div>
+<script src="jsLoginSignInFunctions/functions.js"></script>
+</body>
+</html>

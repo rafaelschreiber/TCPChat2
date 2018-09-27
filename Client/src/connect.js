@@ -11,16 +11,20 @@ let notification = {
 function client_listener() {
     client.setEncoding('utf8');
     client.on('error', (e) => {
-        if(e.code === 'ECONNREFUSED') {
+        console.log('error: ', e.code);
+        if (e.code === 'ECONNREFUSED') {
+            $userFormArea.show();
+            $messageArea.hide();
             alert('It looks like you are not connected to the ' +
-                'server. Please check if you typed the right name')
+                'server.');
+            client.end();
+            client.destroy();
         }
 
     });
     client.connect(port, servername, function () {
         data_traffic();
     });
-
 
 
 }
@@ -102,7 +106,6 @@ function data_traffic() {
     client.on('end', () => {
         client.write("%exit");
         client.end();
-        client.destroy();
     });
 
 }
@@ -133,7 +136,6 @@ function start_single_chat(user) {
 function scroll_down() {
     document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
 }
-
 
 function get_notification() {
     const new_notification =
